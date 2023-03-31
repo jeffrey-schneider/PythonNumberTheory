@@ -4,17 +4,14 @@ Created on Dec 6, 2022
 @author: JCSchneider
 '''
 import math
+import functools
+from fontTools.misc.textTools import num2binary
+from pkg_resources import _sset_none, _sget_none
+from tkinter.constants import FALSE
+from collections import deque
+from test.test_itertools import isEven, isOdd
 
-# def prime_factors(n):
-#     i = 2
-#     while i*i <=n :
-#         if n % 1 == 0:
-#             n /= i
-#             yield i
-#         else:
-#             i += 1
-#     if n > 1:
-#         yield n 
+ITERATIONS = 1000   
 
 
 class NumberTheory:    
@@ -41,14 +38,39 @@ class NumberTheory:
         else:
             return v * v * v
     
+    '''
+    Split an integer into a list of the digits
+    ''' 
+    def number_to_list(self, the_number):
+        retVal = deque([])
+        string = str(the_number)
+        for i in string:
+            retVal.appendleft(int(i))
+        return retVal
+        
+    
+    '''
+    Return sum of a list
+    aka sigma of a list
+    '''       
+    def sum_of_list(self,the_Collection):
+        total = 0
+        [total := total + x for x in the_Collection]
+        return total        
+        
+    
+    def multiple_of_list(self,the_Collection):
+        total = 1
+        [total := total * x for x in the_Collection]
+        return total
+    
     def is_prime(self, v = None):
         if v == None:
-            stopVal = int(math.sqrt(self.get_the_number()))
-        else:
-            stopVal = int(v)  
+            v = self.get_the_number()
+        stopVal = int(math.sqrt(v))         
         i = 2
         while i <= stopVal:
-            if self.__theNumber % i == 0:
+            if v % i == 0:
                 return False
             i+=1
         return True
@@ -87,58 +109,54 @@ class NumberTheory:
             counter = int(math.floor(math.pow(counter, factr)))
             retVal.append(counter)
         return retVal
-    
-    
+ 
     
     
     def get_prime_factors(self, v = None):
         retVal = []
         if v == None:
-            ourNumber = self.get_the_number()
-        else:
-            ourNumber = v 
-        for i in range(2, self.get_the_number()):
-            while ourNumber % i == 0:
+            v = self.get_the_number()         
+        for i in range(2, v):
+            while v % i == 0:
                 retVal.append(i)
-                ourNumber /= i
+                v /= i
         return retVal
-        
-               
-    def get_factors(self, v=None):
-        retVal = []
-        if v == None:
-            x = self.get_the_number()
-        else:
-            x = v
-        for i in range(1, x+1):
-            if x % i == 0:
-                retVal.append(i)
-        return retVal
+    
 
-    def get_factors_sum(self, v = None):
-        retVal = 0
+
+    """ Starting to modify code to use list comprehensions"""
+    def get_factors(self, v=None):  
         if v == None:
-            for i in self.get_factors():
-                retVal += i 
-        else:
-            for i in self.get_factors(v):
-                retVal += i
-        return retVal
+            v = self.get_the_number()        
+        #numbers = range(1, v+1)        
+        #factors = [i for i in numbers if v % i == 0]
+        #factors = [i for i in range(1, v+1) if v % i == 0]
+        return [i for i in range(1, v+1) if v % i == 0]
+    
     
     
     """
-    @author: Jeffrey Schneider
+    This could have been done with SUM, but then I wouldn't have 
+    learned about list comprehensions
     """
+    def get_factors_sum(self, v=None):
+        total = 0
+        if v == None:
+            v = self.get_the_number()
+        return [total := total + x for x in self.get_factors(v)]    
+    
+    """
+    @author: Jeffrey Schneider    
+    Sum of all proper divisors (factors) except itself, hence the subtraction.
+    """    
     def get_aliquot_sum(self, v=None):
-        retVal = 0
+        total = 0
         if v == None:
-            for i in self.get_factors():
-                retVal += i
-            return retVal - self.get_the_number()
-        else:
-            for i in self.get_factors(v):
-                retVal += i 
-            return retVal - v
+            v = self.get_the_number()
+        [total:= total + x for x in self.get_factors(v)]
+        return total - v
+    
+    
 
     def get_reverse_number(self, v=None):
         rev = 0
@@ -157,9 +175,9 @@ class NumberTheory:
 
     def get_reciprocal_number(self, v=None):
         if v == None:
-            return 1.0 / self.get_the_number()
-        else:
-            return 1 / v
+            v = self.get_the_number()
+        return 1.0 / v        
+    
     
     
     def get_hex(self, v=None):
@@ -207,10 +225,10 @@ class NumberTheory:
         Is the number's aliquot sum greater than the number?
         """
         if v == None:
-            return self.get_aliquot_sum()> 0
-        else:
-            return self.get_aliquot_sum(v) > 0
 
+            v = self.get_the_number() 
+        return self.get_aliquot_sum(v) > v
+        
 
     def is_primitive_abundant(self, v=None):
         """
@@ -219,7 +237,8 @@ class NumberTheory:
         """
         pass
         if v == None:
-            v = self.get_the_number()
+            v = self
+        get_the_number()
         
         if is_abundant(v):
             factor_list = get_proper_divisors(v)
@@ -243,25 +262,24 @@ class NumberTheory:
             
 
     
+
     def get_abundance(self, v=None):
-        if v== None:
-            return self.get_aliquot_sum() - self.get_the_number()
-        else:
-            return self.get_aliquot_sum(v) - v    
+        if v==None:
+            v = self.get_the_number()
+        return self.get_aliquot_sum(v) - v
+   
+    
         
     def is_even(self, v=None):
         if v == None:
-            #return self.get_the_number() % 2            
-            return self.get_the_number()%2==0        
-        else:
-            return v % 2 ==0  
+            v = self.get_the_number()        
+        return v % 2 ==0  
         
         
     def is_perfect(self, v= None):
         if v == None:
-            return self.get_abundance() == 0
-        else:
-            return self.get_abundance(v) == 0   
+            v = self.get_the_number()
+        return self.get_abundance(v) == 0   
         
    
     def get_kynea(self, v = None):
@@ -283,27 +301,21 @@ class NumberTheory:
         return int(carolFinal)
     
     #@functools.cache
-    def get_factorial(self, v = None):
-        retVal= 1
+    def get_factorial(self, v=None):
+        retVal = 1
         if v == None:
             v = self.get_the_number()
-            
-        for i in range(1,v +1):
-            retVal *= i 
-        return retVal
-        
-         
-    def get_sigma(self, v=None):        
+        [retVal := retVal * i for i in range(1,v+1)]
+        return retVal    
+ 
+    def get_sigma(self, v=None):
         if v == None:
-            v = self.get_the_number()            
+            v = self.get_the_number()
         if v == 1:
             return 1
         result = 0
-        for num in range(1,v+1):
-            if v % num == 0:
-                result += num
-        return result
-    
+        [result := result + x for x in range(1, v+1) if v % x == 0]
+        return result    
         
     def get_catalan(self, v=None):
         if v == None:
@@ -369,9 +381,37 @@ class NumberTheory:
         memo[v] = retVal
         
         return retVal
+     
+    def is_primitive_abundant(self, v=None):
+        if v == None:
+            v = self.get_the_number() 
+        properDivisorList = []           
+                      
+        if not self.is_abundant(v):        
+            return False
+        else:
+            properDivisorList = self.get_factors(v)
+            ''' get_factors includes the number at the end.  We don't want the number included, lets pop() it off'''
+            properDivisorList.pop()            
+            for i in properDivisorList:
+                if self.is_abundant(i):         
+                    return False
+        return True           
+    
+
+    '''https://www.geeksforgeeks.org/superabundant-numbers/'''
+    def is_super_abundant(self, v=None):
+        if v == None:
+            v = self.get_the_number()
+        for i in range(1,v):
+            x = self.get_sigma(i) / i
+            y = self.get_sigma(v) / (v*1.0)
+            if x > y:
+                return FALSE
+        return True
     
     
-        '''
+    '''
     @author: Jeffrey Schneider
     @see https://www.youtube.com/watch?v=uuMwz47LV_w
     '''
@@ -389,8 +429,7 @@ class NumberTheory:
             list_of_digits.pop()    #Throw away this value
         return False
     
-    
-
+     
     def get_amicable_number(self, v=None):   
         if v == None:
             v = self.get_the_number()
@@ -415,9 +454,22 @@ class NumberTheory:
         my_list = sorted(self.get_factors(v))         
         my_list = my_list[1:-1]    
         return my_list
-   
     
-        '''https://codereview.stackexchange.com/questions/12119/printing-nth-bell-number'''
+    
+    def get_cake_number(self, v=None):
+        if v == None:
+            v = self.get_the_number()        
+        return int ((1.0 / 6.0) * (pow(v, 3) + 5 * v + 6))
+    
+    
+    def get_lazy_caterer(self, v=None):
+        if v == None:
+            v = self.get_the_number()       
+        return (v * v + v + 2) / 2;
+        
+        
+    
+    '''https://codereview.stackexchange.com/questions/12119/printing-nth-bell-number'''
     def get_bell_number(self, v=None):
         if v == None:
             v = self.get_the_number()
@@ -437,8 +489,11 @@ class NumberTheory:
         s_minus_two = sides - 2
         s_minus_four = sides - 4
         return (1 / 2.0) * (s_minus_two * pow(number, 2.0) - s_minus_four * number);
-    
-     def get_primorial(self, v=None):
+        
+        
+        
+        
+    def get_primorial(self, v=None):
         if v == None:
             v = self.get_the_number()  
         summary = 1
@@ -452,6 +507,7 @@ class NumberTheory:
         return summary
     
     
+
     def get_pell_list(self, v=None):
         if v == None:
             v = self.get_the_number()
@@ -557,6 +613,8 @@ class NumberTheory:
     # Function to find the N-th
     # icosikaipentagon number
     def isDNum(self,n):
+        if n == None:
+            n = self.get_the_number()
         # number should be
             # greater than 3
         if n < 4:
@@ -583,9 +641,141 @@ class NumberTheory:
             v = self.get_the_number()
         return (v * v + v + 2) / 2
         
+    def get_cullen(self, v=None):
+        if v == None:
+            v = self.get_the_number()
+        return v * math.pow(2, v) + 1
+    
+    def is_co_prime(self, bNumber, v=None):   
+        if v == None:
+            v = self.get_the_number()
+        
+        if self.gcd(bNumber, v) == 1:
+            return True
+        return False
+    
+    #https://www.geeksforgeeks.org/compositorial-of-a-number/
+    # Python3 program to find Compositorial
+# of composite numbers
+
+# Function to check
+# if a number is composite.
+    def isComposite(self,n=None):
+        if n == None:
+            n = self.get_the_number()
+    # Corner cases
+        if (n <= 3):
+            return False
+    
+    # This is checked so that we can
+    # skip the middle five numbers
+    # in the below loop
+        if (n % 2 == 0 or n % 3 == 0):
+            return True
+        i = 5
+        while(i * i <= n):            
+            if (n % i == 0\
+                or n % (i + 2) == 0):
+                return True
+            i = i + 6
+            
+        return False
+    
+# This function stores all
+# Composite numbers less than N
+    def Compositorial_list(self,n=None):
+        if n == None:
+            n = self.get_the_number()
+        myList = []
+        l = 0
+        for i in range(4, 10**6):
+            if l < n:
+                if self.isComposite(i):
+                    myList.append(i)
+                    l+= 1
+        return myList
+    
+    
+    
+# Function to calculate the
+# Compositorial of n
+    def calculateCompositorial(self,n = None):
+        if n == None:
+            n = self.get_the_number()
+        total = 1
+        myList = self.Compositorial_list(n)
+        return self.multiple_of_list(myList)
         
     
+        
+    def is_curzon(self, v=None):
+        if v == None:
+            v = self.get_the_number()
+        a = 2 ** v + 1
+        b = 2 * v + 1
+        return a % b == 0 
+        
+
     
+    def get_totatives(self, v=None):
+        if v == None:
+            v = self.get_the_number()
+        retList = []
+        counter = 1
+        while counter <= v:
+            if self.is_co_prime(v, counter):
+                retList.append(counter)
+            counter += 1
+        return retList
+            
+        
+
+    def eulersPhi(self,v=None):
+        if v == None:
+            v = self.get_the_number()
+        result = 1  
+        for i in range(2, v):
+            if(self.gcd(i, v) == 1):
+                result += 1
+        return result
+
+   
+    def is_de_polignac(self,v=None):
+        if v == None:
+            v = self.get_the_number()
+        if not self.is_even(v):
+            for p in range(1, v):
+                if self.is_prime(p):
+                    for k in range (1, p):
+                        if v - p == 2**k:
+                            return False
+            return True
+        return False  
+        
+   
+   #get_prime_factors 
+    def is_droll(self, v=None):
+        if v == None:
+            v = self.get_the_number()
+        primeFactors = self.get_prime_factors(v)
+        evenTotal= 0
+        oddTotal = 0
+        for p in primeFactors:
+            if isEven(p):
+                evenTotal += p  
+            if isOdd(p):
+                oddTotal += p
+        print("in droll: ", evenTotal , ' ' , oddTotal, " ", primeFactors)
+        if evenTotal > 0 and evenTotal == oddTotal:
+                return True
+        return False
+            
+             
+                
+            
+            
+            
+                
 ##################################################################
     def get_end_point(self,lat1,lon1,bearing,d):
         R = 6371                     #Radius of the Earth
@@ -611,3 +801,4 @@ class NumberTheory:
         return brng
 
         
+
