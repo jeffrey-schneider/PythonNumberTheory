@@ -342,6 +342,39 @@ class NumberTheory:
             counter += 1
         return retList
     
+    def get_fibonacci_like(self, v=None, number1, number2):
+        if v == None:
+            v = self.get_the_number()
+        num1 = number1
+        num2 = number2
+        num3 = 0
+        retList = []
+        while num1 <= v:
+            retList.append(num1)
+            num3 = num2 + num1
+            num1 = num2
+            num2 = num3
+        return retList
+        
+    def isFiboDiv(self,v=None):
+        if v == None:
+            v = self.get_the_number()
+        for i in range(1,len(v)):
+           left = v[:i]
+           right = v[i:]
+           print(left, " ", right)
+           return self.get_fibonacci_like(v, left, right)
+           
+
+       # sb = []
+       # sb.append(v)
+       # left = 0
+       # right = 0
+       # for i in range(1,len(sb)+1):
+        #    left = 
+            
+            
+             
     def get_lucas_list(self, v = None):
         retList = []
         if v == None:
