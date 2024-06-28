@@ -1,6 +1,6 @@
-#K:\JCSCHNEIDER\Courses\CITC 2375 Inet Software Dev\
-#LectureForSpring23Source\SharedFolder\
-#localFunctions.py
+# K:\JCSCHNEIDER\Courses\CITC 2375 Inet Software Dev\
+# LectureForSpring23Source\SharedFolder\
+# localFunctions.py
 
 import functools
 import timeit
@@ -10,109 +10,106 @@ import random
 
 
 @functools.lru_cache(maxsize=128)
-def jugglersSequence(v):
+def jugglersSequence(v) -> list[int]:
     """Return a list of jugglers sequence calculated from passed number"""
     powerFactor = 0.0
     retVal = []
-    while v > 1 :
+    while v > 1:
         retVal.append(v)
-        if(v%2 == 0):
+        if v % 2 == 0:
             powerFactor = 0.5
         else:
             powerFactor = 1.5
-        v = math.floor(v**powerFactor)
+        v = math.floor(v ** powerFactor)
     retVal.append(1)
     return retVal
 
 
-def jugglersSequenceAll(v):
+def jugglersSequenceAll(v) -> list[int]:
     """Return a list of jugglers sequence, high water mark and number of steps calculated from passed number"""
     test = jugglersSequence(v)
     highWaterMark = getHighWater(test)
     countOfElements = len(test)
     return test, highWaterMark, countOfElements
 
-    
+
 def jugglersDictionary(v):
     """ Return the juggler's sequence in a dictionary with high water and steps """
-##    retVal = {}
+    ##    retVal = {}
     x = jugglersSequence(v)
     y = getHighWater(x)
     z = len(x)
-       
-    retVal = { 'theNumber' : v,
-                'seq' : x,
-               'highWater' : y,
-               'steps' : len(x) }               
+
+    retVal = {'theNumber': v,
+              'seq': x,
+              'highWater': y,
+              'steps': len(x)}
     return retVal
 
 
-    
 def getHighWater(v):
     """ Return largest number from a list """
     maxValue = -1
-    for i in v:    
-        if(i > maxValue) :
+    for i in v:
+        if (i > maxValue):
             maxValue = i
-    return(maxValue)
-
+    return (maxValue)
 
 
 @functools.lru_cache(maxsize=128)
 def collatzBkup(v):
     """Return the collatz conjecture list """
     retVal = []
-    while v > 1 :
+    while v > 1:
         retVal.append(v)
-        if(v % 2 == 0):
-            v=math.floor(v/2)
+        if (v % 2 == 0):
+            v = math.floor(v / 2)
         else:
-            v = math.floor(3.0*v+1)
+            v = math.floor(3.0 * v + 1)
     retVal.append(1)
     return retVal
 
 
-
-@functools.lru_cache(maxsize=128)          
-def isPrime(number):
+@functools.lru_cache(maxsize=128)
+def isPrime(number: int):
     """Test to determine if number is prime"""
     isPrime = True
-    for num in range(2,int(number ** 0.5) + 1):
+    for num in range(2, int(number ** 0.5) + 1):
         if number % num == 0:
             isPrime = False
             break
-    return(isPrime)
+    return (isPrime)
 
 
 @functools.lru_cache(maxsize=128)
-def factorList(number):
+def factorList(number: int):
     factorList = []
-    for i in range(1,number+1):
-        if(number %i == 0):
+    for i in range(1, number + 1):
+        if (number % i == 0):
             factorList.append(i)
     return factorList
 
 
 @functools.lru_cache(maxsize=128)
-def fibonacci(n):
+def fibonacci(n: int):
     if n == 0:
         return 0
-    elif n==1:
+    elif n == 1:
         return 1
-    return fibonacci(n-1) + fibonacci(n-2)
+    return fibonacci(n - 1) + fibonacci(n - 2)
 
 
 @functools.lru_cache(maxsize=128)
-def findFib(n):
-    #retVal = round(((1+math.sqrt(5))/2)**n - ((1-math.sqrt(5))/2)**n  /  math.sqrt(5),0)
-    retVal = math.floor(((1+math.sqrt(5))/2)**n - ((1-math.sqrt(5))/2)**n  /  math.sqrt(5))
+def findFib(n: int):
+    # retVal = round(((1+math.sqrt(5))/2)**n - ((1-math.sqrt(5))/2)**n  /  math.sqrt(5),0)
+    retVal = math.floor(((1 + math.sqrt(5)) / 2) ** n - ((1 - math.sqrt(5)) / 2) ** n / math.sqrt(5))
     return retVal
 
 
 @functools.lru_cache(maxsize=128)
 def getFactorSet(theNumber):
     counter = 1
-    a = {1,}
+    a = {1, }
     while counter <= theNumber:
         if theNumber % counter == 0:
             a.add(counter)
@@ -123,7 +120,7 @@ def getFactorSet(theNumber):
 def get_carol_numbers01(stop_value):
     '''One way to work with a list '''
     ret_list = []
-    for the_value in range (stop_value):
+    for the_value in range(stop_value):
         ret_list.append(get_carol_number(the_value))
     return ret_list
 
@@ -131,42 +128,40 @@ def get_carol_numbers01(stop_value):
 ##def get_carol_number(theNumber):
 def get_carol_number(theNumber):
     """ Return the carol number in the equation of 4^n - 2^n+1 -1"""
-    carol_number = math.floor(4** theNumber - 2 ** (theNumber+1) -1)
+    carol_number = math.floor(4 ** theNumber - 2 ** (theNumber + 1) - 1)
     if carol_number > 0:
-        return carol_number        
+        return carol_number
 
 
-@functools.lru_cache(maxsize=128)    
+@functools.lru_cache(maxsize=128)
 def get_carol_number_list(stop_value):
-    #the get_carol_number(0) and (1) return -2 and -1.
+    # the get_carol_number(0) and (1) return -2 and -1.
     # This won't work, ergo filter them out.
     ret_list = []
     for x in range(stop_value):
         testVal = get_carol_number(x)
-        if testVal :
-            ret_list.append(testVal)    
+        if testVal:
+            ret_list.append(testVal)
     return ret_list
 
 
 def get_kynea_number(theNumber):
     """ Return the Kynea number in the equation of 4^n - 2^n+1 -1"""
-    if theNumber > 0:        
-        kynea_number = math.floor(4** theNumber + 2 ** (theNumber+1) -1)            
+    if theNumber > 0:
+        kynea_number = math.floor(4 ** theNumber + 2 ** (theNumber + 1) - 1)
         return math.floor(kynea_number)
     return
 
 
-@functools.lru_cache(maxsize=128)    
+@functools.lru_cache(maxsize=128)
 def get_kynea_number_list(stop_value):
     '''Rewrite above as a list comprehension'''
     ret_list = []
     for x in range(stop_value):
         testVal = get_kynea_number(x)
-        if testVal : 
+        if testVal:
             ret_list.append(testVal)
     return ret_list
-
-
 
 
 @functools.lru_cache(maxsize=128)
@@ -174,11 +169,11 @@ def get_leyland_number(the_number):
     ans = []
     x = 2
     y = 2
-    #Outer loop for x from 2 to n
+    # Outer loop for x from 2 to n
     while x <= the_number:
-        #Inner loop for y from 2 to x
+        # Inner loop for y from 2 to x
         while y <= x:
-            temp = pow(x,y) + pow(y,x)
+            temp = pow(x, y) + pow(y, x)
             ans.append(temp)
             y += 1
         x += 1
@@ -188,57 +183,58 @@ def get_leyland_number(the_number):
 ## This code is contributed by rishabh_jain
 ## https://www.geeksforgeeks.org/leyland-number/
 '''Print first n Leyland Number.'''
-def leyland(n): 
-    ans = [] 
+
+
+def leyland(n):
+    ans = []
     x = 2
     y = 2
-  
+
     # Outer loop for x from 2 to n. 
-    while x <= n : 
-  
+    while x <= n:
+
         # Inner loop for y from 2 to x. 
         y = 2
-        while y <= x : 
-  
+        while y <= x:
             # Calculating x^y + y^x 
-            temp = pow(x, y) + pow(y, x) 
-  
-            ans.append(temp); 
+            temp = pow(x, y) + pow(y, x)
+
+            ans.append(temp);
             y = y + 1
         x = x + 1
-  
+
     # Sorting the all Leyland Number. 
-    ans.sort(); 
-  
+    ans.sort();
+
     i = 0
-  
+
     # Printing first n Leyland number.
     return_list = []
-    while i < n : 
-##        print(ans[i], end = " ")
+    while i < n:
+        ##        print(ans[i], end = " ")
         return_list.append(ans[i])
         i = i + 1
     return return_list
-  
- 
+
+
 def get_prime_list(the_list):
     ret_list = []
     for x in range(len(the_list)):
         if isPrime(abs(the_list[x])):
             ret_list.append(the_list[x])
     return ret_list
-    
 
-def base_convert(n, basex=2):    
-    sign = '-' if n<0 else ''
+
+def base_convert(n, basex=2):
+    sign = '-' if n < 0 else ''
     n = abs(n)
     if n < basex:
         return str(n)
     s = ''
     while n != 0:
-        s = str(n%basex) + s
-        n = n//basex
-    return sign+s
+        s = str(n % basex) + s
+        n = n // basex
+    return sign + s
 
 
 def area(a, b):
@@ -246,28 +242,28 @@ def area(a, b):
 
 
 def hypotenuse(a, b):
-    return math.hypot(a,b)
+    return math.hypot(a, b)
 
-def rectangle(a,b):
+
+def rectangle(a, b):
     areaBuffer = area(a, b)
     perimeter = 2 * (a + b)
-    hypot = hypotenuse(a,b)
+    hypot = hypotenuse(a, b)
     return areaBuffer, perimeter, hypot
-    
 
-def search4vowels(phrase:str)->set:
+
+def search4vowels(phrase: str) -> set:
     """Display any vowels found in an inputted word """
-    vowels = set('aeiou')    
+    vowels = set('aeiou')
     return vowels.intersection(set(phrase))
 
-def search4letters(phrase:str, letters:str) -> set:
+
+def search4letters(phrase: str, letters: str) -> set:
     return set(letters).intersection(set(phrase))
 
 
-
-    
-#value returning functions
-def dice(numberOfDice,numberOfSides):
+# value returning functions
+def dice(numberOfDice, numberOfSides):
     """
     dice(numberOfDice, numberOfSides)
     
@@ -276,32 +272,31 @@ def dice(numberOfDice,numberOfSides):
     accumulator = 0
     x = numberOfDice
     while x > 0:
-        accumulator += random.randint(1,numberOfSides)
+        accumulator += random.randint(1, numberOfSides)
         x -= 1
     return accumulator
-    
-    
-        
+
+
 def dice2(numberOfSides):
     """
         dice2(number of sides) 
          Return two random values, x and y """
-    x = random.randint(1,numberOfSides)
-    y = random.randint(1,numberOfSides)
+    x = random.randint(1, numberOfSides)
+    y = random.randint(1, numberOfSides)
     return x, y
-    
+
 
 def rectangleMeasurements(length, width):
     """
     rectangleMeasurements(number, number)
     Returns: Length, Width, Perimeter, Angle1, Angle2, Hypotenuse """
-        
-    perimeter = (2*length + 2*width)
-    angle1 = math.degrees(math.atan(width/length))
-    angle2 = math.degrees(math.atan(length/width))
-    hyp = hypotenuse(length,width)
+
+    perimeter = (2 * length + 2 * width)
+    angle1 = math.degrees(math.atan(width / length))
+    angle2 = math.degrees(math.atan(length / width))
+    hyp = hypotenuse(length, width)
     return length, width, perimeter, angle1, angle2, hyp
-        
+
 
 def factorsFlask(number):
     """\nfactors(number)
@@ -310,63 +305,59 @@ def factorsFlask(number):
     i = 1
     summaryFactors = 0
     isPrime = False
-    abundance = 0    
+    abundance = 0
     isAbundant = False
-    retVal = []  #List
+    retVal = []  # List
     while i <= number:
         if number % i == 0:
             retVal.append(i)
             if i < number:
                 summaryFactors += i
-        i+=1
+        i += 1
     if len(retVal) < 3:
-        isPrime = True 
+        isPrime = True
 
     abundance = summaryFactors
     if abundance > number:
         isAbundant = True
     if abundance == number:
-        #abundance = "PERFECT" 
+        # abundance = "PERFECT"
         isAbundant = ''
     abundance = abundance - int(number)
     if abundance == 0: abundance = "PERFECT"
     return retVal, len(retVal), summaryFactors, isPrime, abundance, isAbundant
 
 
-
-    
 def jugglers(compareNumber):
     """\njugglers(number)
-     Return list of Juggler's sequence for a single number """    
-    
+     Return list of Juggler's sequence for a single number """
+
     powerFactor = 0.0
-    retVal = [] 
+    retVal = []
     while compareNumber > 1:
         retVal.append(compareNumber)
         if compareNumber % 2 == 0:
-            powerFactor = 1/2
+            powerFactor = 1 / 2
         else:
-            powerFactor = 3/2
+            powerFactor = 3 / 2
         compareNumber = math.floor(math.pow(compareNumber, powerFactor))
     retVal.append(1)
     return retVal, max(retVal), len(retVal)
 
 
-
-    
 def collatz(compareNumber):
     """\n collatz(number)
     Return list of Collatz Conjecture sequence for a single number """
-    retVal = [] 
+    retVal = []
     while compareNumber > 1:
         retVal.append(compareNumber)
         if compareNumber % 2 == 0:
-           compareNumber = math.floor(compareNumber / 2)
+            compareNumber = math.floor(compareNumber / 2)
         else:
-            compareNumber = math.floor(3.0*compareNumber + 1)
-        
+            compareNumber = math.floor(3.0 * compareNumber + 1)
+
     retVal.append(1)
-    #print(retVal)
+    # print(retVal)
     return retVal, max(retVal), len(retVal)
 
 
@@ -375,8 +366,8 @@ def randomValue():
     randomValue()
     Return a random floating point number N such that 
     a <= N <= b for a <= b and b <= N <= a for b < a."""
-    return random.uniform(1.0,10001.0)
-    
+    return random.uniform(1.0, 10001.0)
+
 
 def variableNumberOfArguments(*argv):
     """
@@ -385,19 +376,16 @@ def variableNumberOfArguments(*argv):
     *args for variable number of arguments 
     Note: python does not support method overloading.
     """
-    for arg in argv:  
-        print (arg) 
+    for arg in argv:
+        print(arg)
 
 
-
-
-def variableNumberOfArguments(arg1,*argv):   
-# Python program to illustrate  
-# *args with first extra argument 
-    print ("First argument :", arg1) 
-    for arg in argv: 
-        print("Next argument through *argv :", arg) 
-
+def variableNumberOfArguments(arg1, *argv):
+    # Python program to illustrate
+    # *args with first extra argument
+    print("First argument :", arg1)
+    for arg in argv:
+        print("Next argument through *argv :", arg)
 
 
 """
@@ -409,21 +397,22 @@ A keyword argument is where you provide a name to the variable as you pass it in
 One can think of the kwargs as being a dictionary that maps each keyword to the value that we pass alongside it.
 That is why when we iterate over the kwargs there doesn’t seem to be any order in which they were printed out.
 """
-def funWithDictionaries(**kwargs):
-    for key, value in kwargs.items(): 
-        print ("%s == %s" %(key, value)) 
-  
-  
 
-# Python program to illustrate  **kargs for  
-# variable number of keyword arguments with 
+
+def funWithDictionaries(**kwargs):
+    for key, value in kwargs.items():
+        print("%s == %s" % (key, value))
+
+    # Python program to illustrate  **kargs for
+
+
+# variable number of keyword arguments with
 # one extra argument. 
-  
-def funWithDictionaries02(arg1, **kwargs): 
-    print(arg1, end=" ") 
-    for key, value in kwargs.items(): 
-        print ("%s == %s" %(key, value)) 
-  
+
+def funWithDictionaries02(arg1, **kwargs):
+    print(arg1, end=" ")
+    for key, value in kwargs.items():
+        print("%s == %s" % (key, value))
 
 
 def averages(*argv):
@@ -432,8 +421,8 @@ def averages(*argv):
     for arg in argv:
         counter += 1
         summary += arg
-    
-    return summary / counter 
+
+    return summary / counter
 
 
 """
@@ -477,7 +466,6 @@ else:
 Even with just two possibilities (and of the very simplest kind!), the lack of **kw is aleady making the second option absolutely untenable and intolerable -- just imagine how it plays out when there half a dozen possibilities, possibly in slightly richer interaction... without **kw, life would be absolute hell under such circumstances!
 """
 
-
 """
 https://betterprogramming.pub/
 how-you-make-sure-input-is-the-type-you-want-it-to-be-in-python-521f3565a66d
@@ -487,10 +475,13 @@ how-you-make-sure-input-is-the-type-you-want-it-to-be-in-python-521f3565a66d
 This means all characters in the string are letters.
 Not even a space is allowed here.
 '''
+
+
 def is_string_only(check_input):
     if check_input.isalpha():
         return True
     return False
+
 
 '''
     Use thusly:
@@ -502,6 +493,8 @@ def is_string_only(check_input):
 """
 I’m using it to check if there are any spaces in the string and at the same time if the rest are letters.
 """
+
+
 def is_string_with_space(check_input):
     valid = False
     if ' ' in check_input:
@@ -512,30 +505,39 @@ def is_string_with_space(check_input):
                 valid = True
     return valid
 
+
 """
 Check for both letters and/or numbers
 """
+
+
 def is_string_or_num(check_input):
     if check_input.isalnum():
         return True
     return False
 
+
 """
 Check for integer
 """
+
+
 def is_digit(check_input):
     if check_input.isdigit():
         return True
     return False
 
+
 """
 Check for a floating point
 """
+
+
 def is_float(check_input):
     if '.' in check_input:
         split_number = check_input.split('.')
         if len(split_number) == 2 and split_number[0].isdigit() and \
-        split_number[1].isdigit():
+                split_number[1].isdigit():
             return True
     return False
 
