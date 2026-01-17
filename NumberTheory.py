@@ -13,12 +13,15 @@ from typing import override, List, Any
 
 '''
 Purpose of this Class.
-This project is not to show the best in programming code or style, it is only to assist the end user in problem solving.
+This project is not to show the best in programming code or style,
+    it is only to assist the end user in problem solving.
 
 It was a way to combine library and class.
 
-It started by the desire to calculate latitude and longitude from inside of a object to a destination and then evolved 
-    into a library of functions that can be used to calculate latitude and longitude between two objects. 
+It started by the desire to calculate latitude and longitude from inside
+    of a object to a destination and then evolved 
+    into a library of functions that can be used to calculate latitude
+    and longitude between two objects. 
 '''
 
 ITERATIONS = 1000
