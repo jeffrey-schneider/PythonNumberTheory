@@ -11,9 +11,15 @@ import functools
 from collections import deque
 from typing import override, List, Any
 
-# from test.test_itertools import isEven, isOdd
-# import Primes
+'''
+Purpose of this Class.
+This project is not to show the best in programming code or style, it is only to assist the end user in problem solving.
 
+It was a way to combine library and class.
+
+It started by the desire to calculate latitude and longitude from inside of a object to a destination and then evolved 
+    into a library of functions that can be used to calculate latitude and longitude between two objects. 
+'''
 
 ITERATIONS = 1000
 
@@ -311,7 +317,7 @@ class NumberTheory:
         else:
             return n * NumberTheory.factorial(n - 1)
 
-    # @functools.cache
+    @functools.cache
     @staticmethod
     def get_factorial(self=None, v=None) -> int:
         if v is None:
@@ -886,8 +892,11 @@ class NumberTheory:
     def get_string_list_of_digits(self):
         pass
 
-    def is_achilles(self):
-        pass
+    def is_achilles(self = None, v: int = None):
+        if v is None:
+            v = self.get_the_number()
+        return (NumberTheory.is_powerful(None, v) and not NumberTheory.isPerfectPower(None, v))
+
 
     def is_admirable(self):
         pass
@@ -948,8 +957,22 @@ class NumberTheory:
         return partitions[v]
     '''
 
-    def isApocalyptic(self):
-        pass
+    '''
+    public static boolean isApocalyptic(int exponent) {
+		String getTestNumber = getBigIntegerPower(2, exponent);
+		return getTestNumber.contains("666");
+	}'''
+
+
+    @staticmethod
+    def is_apocalyptic(self=None, v: int=None) -> bool:
+        if v is None:
+            v = self.get_the_number()
+        testResult = str(pow(2, v))
+        return "666" in testResult
+
+        #return v == 157
+
 
     def isArithmetic(self):
         pass
@@ -1020,7 +1043,7 @@ class NumberTheory:
     def isEvil(self):
         pass
 
-    def isFiboDiv(self):
+    def is_fibo_div(self):
         pass
 
     def isFrugal(self):
@@ -1095,11 +1118,35 @@ class NumberTheory:
     def isPalindromic(self):
         pass
 
-    def isPerfect(self):
-        pass
+    #def isPerfect(self):
+    #    pass
 
-    def isPerfectPower(self):
-        pass
+    @staticmethod
+
+    def isPerfectPower(self = None, n: int = None, printMe: bool = None)-> bool:
+        a = '''
+        		  Tests whether an integer n is a perfect power, perfect powers are any integer
+        		  that is an integer power of another integer for example 4(2^2) 9(3^2) 27(3^3)
+        		  243(3^5) are all perfect powers Returns a pair of integers [a,b] such that n
+        		  = a^b. (If multiple possible values for a and b exist, the pair with the
+        		  smallest a value is returned)
+        '''
+        if n is None:
+            n = self.get_the_number()
+        if n < 1:
+            return False
+        for a in range(2, int(math.sqrt(n)) + 1):
+            b = 2
+            power = a ** b
+            while power <= n:
+                if power == n:
+                    if printMe is not None:
+                        print(f'isPerfectPower {a}, {b}')
+                    return True
+                b += 1
+                power = a ** b
+        return False
+
 
     def isPernicious(self):
         pass
@@ -1110,8 +1157,39 @@ class NumberTheory:
     def isPowerOfTwo(self):
         pass
 
-    def isPowerful(self):
-        pass
+
+
+    @staticmethod
+    def prime_factors_with_exponents(self = None, v: int=None):
+        if v is None:
+            v = self.get_the_number()
+        # OpenAI. (2024). Python code to determine if a number is powerful. Retrieved June 26, 2024, from https://chat.openai.com
+        factors = {}
+        divisor = 2
+        while v > 1:
+            count = 0
+            while(v % divisor) == 0:
+                v //=divisor
+                count += 1
+            if count > 0:
+                factors[divisor] = count
+            divisor += 1
+        return factors
+
+    @staticmethod
+    def is_powerful(self = None, v: int=None) -> bool:
+        if v is None:
+            v = self.get_the_number()
+        # OpenAI. (2024). Python code to determine if a number is powerful. Retrieved June 26, 2024, from https://chat.openai.com
+        # Determines if a number is powerful
+        if v == 1:
+            return True
+        factors = NumberTheory.prime_factors_with_exponents(None, v)
+        for exponent in factors.values():
+            if exponent < 2:
+                return False
+        return True
+
 
     def isPractical(self):
         pass
@@ -1131,14 +1209,21 @@ class NumberTheory:
     def isRare(self):
         pass
 
-    def isSastry(self):
-        pass
 
-    def isSastry(self):
-        pass
+    @staticmethod
+    def is_sastry(self=None, v: int = None) -> bool:
+        if v is None:
+            v = self.get_the_number()
 
-    def isSphenic(self):
-        pass
+        x: int = v + 1
+        z = int(str(v) + str(x))
+        return math.sqrt(z) % 1.0 == 0
+            #return True
+        #
+        return False
+
+
+
 
     def isSquareFree(self):
         pass

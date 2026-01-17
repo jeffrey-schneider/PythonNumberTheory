@@ -324,3 +324,14 @@ class Primes(NumberTheory):
 
     def is_pierpont_prime(self) -> bool:
         pass
+
+    @staticmethod
+    def isSphenic(self=None, v=None) -> bool:
+        if v is None:
+            v = self.get_the_number()
+
+        set1 = Primes.get_distinct_prime_factors(None, v)
+        if len(set1) == 3:
+                set2 = Primes.get_prime_factors(None, v)
+                return set1 == set2
+        return False

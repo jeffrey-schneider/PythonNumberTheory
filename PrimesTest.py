@@ -180,6 +180,16 @@ class Test(unittest.TestCase):
     def test_to_skip(self):
         pass
 
+    def test_sphenic_list(self):
+        the_list = []
+        test_desc = "List of Sphenic Numbers < 400"
+        for i in range(2, 400):
+            if Primes.isSphenic(None, i):
+                the_list.append(i)
+        result = the_list
+        expected = [30, 42, 70, 78, 105, 138, 174, 186, 222, 230, 282, 286, 310, 318, 345, 366,]
+        self.assertListEqual(expected, result, test_desc + " list should be equal")
+        self.assertCountEqual(expected, result, test_desc + " count should be equal")
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

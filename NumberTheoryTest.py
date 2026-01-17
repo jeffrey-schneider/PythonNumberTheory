@@ -416,6 +416,53 @@ class Test(unittest.TestCase):
         self.assertListEqual(expected, result, "Lucky numbers should be equal")
         self.assertCountEqual(expected, result, "Lucky number count should be equal")
 
+
+    def testIsSastry(self):
+        instance = NumberTheory(528)
+        self.assertTrue(NumberTheory.is_sastry(instance, None))
+        self.assertTrue(NumberTheory.is_sastry(None, 528))
+
+        instance = NumberTheory(184)
+        self.assertFalse(NumberTheory.is_sastry(instance, None))
+        self.assertFalse(NumberTheory.is_sastry(None, 184))
+
+
+    ''' 157, 192, 218, 220, 222'''
+    def testIsApocalyptic(self):
+        i: int = 157
+        instance = NumberTheory(i)
+        self.assertTrue(NumberTheory.is_apocalyptic(instance, None))
+        self.assertTrue(NumberTheory.is_apocalyptic(None, i))
+
+        instance = NumberTheory(i + 1)
+        self.assertFalse(NumberTheory.is_apocalyptic(instance, None))
+        self.assertFalse(NumberTheory.is_apocalyptic(None, i + 1))
+
+
+    '''1, 4, 8, 9, 16, 25, 27, 32, 36, 49, 64, 72, 81, 100, 108, 121, 125, 128, 144, 169, 196, 200'''
+    def testIsPowerful(self):
+        i: int = 100
+        instance = NumberTheory(i)
+        self.assertTrue(NumberTheory.is_powerful(instance, None))
+        self.assertTrue(NumberTheory.is_powerful(None, i))
+
+        i = 101
+        instance.set_the_number(i)
+        self.assertFalse(NumberTheory.is_powerful(instance, None))
+        self.assertFalse(NumberTheory.is_powerful(None, i ))
+
+
+    ''' 32, 225 1024, 1764'''
+    def testisPerfectPower(self):
+        i: int = 64
+        instance = NumberTheory(i)
+        self.assertTrue(NumberTheory.isPerfectPower(instance, None))
+        self.assertTrue(NumberTheory.isPerfectPower(None, i))
+        i = 65
+        instance.set_the_number(i)
+        self.assertFalse(NumberTheory.isPerfectPower(None, i))
+        self.assertFalse(NumberTheory.isPerfectPower(instance, None))
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
