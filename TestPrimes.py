@@ -57,5 +57,14 @@ def main():
     print("72", Primes.is_droll(None, 72))
 
 
+    print("----Sphenic")
+    print("List of Sphenic Numbers: ")
+    for i in range(2, 400):
+        if Primes.isSphenic(None, i):
+            print(f'{i}', end=' ')
+
+
+
+
 if __name__ == '__main__':
     main()

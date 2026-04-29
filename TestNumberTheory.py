@@ -3,6 +3,8 @@ Created on Dec 6, 2022
 
 @author: JCSchneider
 """
+from unittest import TestCase
+
 # from NumberTheory import *
 
 
@@ -16,9 +18,9 @@ def main():
     instance = NumberTheory(9)
 
     print("Is ", instance.get_the_number(), " even?")
-    print(NumberTheory.is_even(instance,None))
+    print(NumberTheory.is_even(instance, None))
     x = 12
-    print("Is ", x, " even? ", NumberTheory.is_even(None,x))
+    print("Is ", x, " even? ", NumberTheory.is_even(None, x))
 
     print(instance.get_the_number())
 
@@ -31,7 +33,6 @@ def main():
     print(f'{NumberTheory.get_cube(None, 8) = }')
     instance.set_the_number(9)
     print(NumberTheory.get_cube(instance, None))
-
 
     print("Primes: ")
     print(f'{NumberTheory.is_prime(None, 32) = }')
@@ -48,7 +49,7 @@ def main():
     print()
 
     print("Jugglers 37")
-    for i in NumberTheory.get_jugglers(None,37):
+    for i in NumberTheory.get_jugglers(None, 37):
         print(i, end=" ")
     print()
 
@@ -72,7 +73,7 @@ def main():
     # --------
     print("Reversed 43")
     instance.set_the_number(43)
-    print(NumberTheory.get_reverse_number(instance,None))
+    print(NumberTheory.get_reverse_number(instance, None))
 
     print("Reciprocal 43")
     print(NumberTheory.get_reciprocal_number(None, 43))
@@ -87,18 +88,18 @@ def main():
     x = 41
     print(x, " ", NumberTheory.is_abundant(None, x))
 
-    print(instance.get_the_number(), " ", NumberTheory.get_abundance(instance,None))
+    print(instance.get_the_number(), " ", NumberTheory.get_abundance(instance, None))
     print(x, " ", NumberTheory.get_aliquot_sum(None, x), " ", NumberTheory.get_abundance(None, x))
 
     print("Get factors sum: ", NumberTheory.get_factors_sum(None, x))
     x = 9
     instance.set_the_number(x)
-    print("Sigma: ", NumberTheory.get_sigma(instance,None))
+    print("Sigma: ", NumberTheory.get_sigma(instance, None))
     print("Sigma: ", NumberTheory.get_sigma(None, x * 10))
 
     instance.set_the_number(20)
     print("Catalan ", NumberTheory.get_catalan(instance, None))
-    print("Catalan ", NumberTheory.get_catalan(None,15))
+    print("Catalan ", NumberTheory.get_catalan(None, 15))
 
     print("get_fibonacci_list", NumberTheory.get_fibonacci_list(instance, None))
     print("get_fibonacci_list", NumberTheory.get_fibonacci_list(None, 15))
@@ -108,24 +109,24 @@ def main():
     print("get_motzin", NumberTheory.get_motzkin(None, 20))
 
     instance.set_the_number(10)
-    print("getPellList: ", NumberTheory.get_pell_list(instance,None))
+    print("getPellList: ", NumberTheory.get_pell_list(instance, None))
     print("getPellList: ", NumberTheory.get_pell_list(None, 12))
     print("getPell: ", NumberTheory.get_pell(instance, None))
-    print("getPell: ", NumberTheory.get_pell(None,12))
+    print("getPell: ", NumberTheory.get_pell(None, 12))
 
     instance.set_the_number(15)
-    print("getJacobsthalList ", NumberTheory.get_jacobsthal_list(instance,None))
-    print("getJacobsthalList ", NumberTheory.get_jacobsthal_list(None,12))
+    print("getJacobsthalList ", NumberTheory.get_jacobsthal_list(instance, None))
+    print("getJacobsthalList ", NumberTheory.get_jacobsthal_list(None, 12))
     instance.set_the_number(12)
     print("getJacobsthal ", NumberTheory.get_jacobsthal(instance, None))
-    print("getJacobsthal ", NumberTheory.get_jacobsthal(None,15))
+    print("getJacobsthal ", NumberTheory.get_jacobsthal(None, 15))
 
     instance.set_the_number(21)
     print("alternating Factorial: ", NumberTheory.get_alternating_factorial(instance, None))
 
     instance.set_the_number(16)
-    print("is Deficient: ", NumberTheory.is_deficient(instance,None))
-    print("is Deficient: ", NumberTheory.is_deficient(None,60))
+    print("is Deficient: ", NumberTheory.is_deficient(instance, None))
+    print("is Deficient: ", NumberTheory.is_deficient(None, 60))
 
     print("gcd: ", NumberTheory.gcd(12, 8))
     print("lcm:  ", NumberTheory.lcm(None, 15, 75))
@@ -137,7 +138,7 @@ def main():
 
     print("D-Numbers")
     for n in range(1, 500):
-        if NumberTheory.isDNum(None,n):
+        if NumberTheory.isDNum(None, n):
             print(n, end=' ')
     print()
 
@@ -153,10 +154,10 @@ def main():
     print("Lazy Caterer")
     for n in range(1, 25):
         print(NumberTheory.get_lazy_caterer(None, n))
-    #print(instance.get_the_number(), " ", NumberTheory.get_lazy_caterer())
+    # print(instance.get_the_number(), " ", NumberTheory.get_lazy_caterer())
 
     print("Primitive Abundant")
-#    print(NumberTheory.is_primitive_abundant(None,24))
+    #    print(NumberTheory.is_primitive_abundant(None,24))
 
     print("https://forum.generic-mapping-tools.org/t/how-to-calculate-coordinates-from-bearing-distance/1217")
     lat2, lon2 = instance.get_end_point(lat1=50, lon1=8, bearing=310, d=23)
@@ -171,25 +172,25 @@ def main():
 
     print()
     instance.set_the_number(30)
- #   print("is 3 abundant? ", NumberTheory.is_abundant(None,3))
- #   print("is_primitive_abundant", instance.is_primitive_abundant(instance, None))
-#    print("is_primitive_abundant", instance.is_primitive_abundant(None, 3600))
+    #   print("is 3 abundant? ", NumberTheory.is_abundant(None,3))
+    #   print("is_primitive_abundant", instance.is_primitive_abundant(instance, None))
+    #    print("is_primitive_abundant", instance.is_primitive_abundant(None, 3600))
 
     print("Superabundant")
     print("120 is, 5 is not")
-  #  print(instance.is_super_abundant(120))
-  #  print(instance.is_super_abundant(5))
+    #  print(instance.is_super_abundant(120))
+    #  print(instance.is_super_abundant(5))
 
     print("Keith Number")
     for i in range(10, 5000):
-        if (NumberTheory.is_keith_number(None,  i)):
+        if (NumberTheory.is_keith_number(None, i)):
             print(i)
 
     print("Betrothed Number")
     for i in range(48, 1000):
-        betrothed = NumberTheory.get_betrothed_number(None,i)
+        betrothed = NumberTheory.get_betrothed_number(None, i)
         if betrothed > 0:
-            print("Number: {0:3d}  Betrothed: {1:5.0f}".format(i, NumberTheory.get_betrothed_number(None,i)))
+            print("Number: {0:3d}  Betrothed: {1:5.0f}".format(i, NumberTheory.get_betrothed_number(None, i)))
 
     print("Cake Numbers")
     n = 0
@@ -223,7 +224,7 @@ def main():
         print()
 
     print("----Number  -> Factorials -> Primorials")
-    print("is 11 prime? ", NumberTheory.is_prime(None,11))
+    print("is 11 prime? ", NumberTheory.is_prime(None, 11))
     for i in range(26):
         print("{0}  {1:,} / {2:,}".format(i, instance.get_factorial(None, i), instance.get_primorial(None, i)))
 
@@ -232,7 +233,7 @@ def main():
         print("{0}  {1:,}".format(i, instance.get_cullen(None, i)))
 
     print("---Co primes")
-    print(NumberTheory.is_co_prime(  instance, 35, 18))
+    print(NumberTheory.is_co_prime(instance, 35, 18))
     instance.set_the_number(35)
     print(NumberTheory.is_co_prime(instance, 18))
 
@@ -279,6 +280,36 @@ def main():
     print("Queues")
     print(NumberTheory.the_queue())
 
+    print("\nSastry Numbers")
+    the_list = [183, 328, 528, 715, 716, 22145328, ]
+    for i in the_list:
+        print(f'{i} {NumberTheory.is_sastry(None, i)=}')
+
+
+    print("\nApocalyptic Numbers")
+    the_list = [157, 192, 218, 220, 222]
+    for i in the_list:
+        print(f'{i} {NumberTheory.is_apocalyptic(None, i)=}')
+
+    print("\nPowerful Numbers")
+    the_list = [1, 4, 8, 9, 16, 25, 27, 32, 36, 49, 64, 72, 81, 100, 108, 121, 125, 128, 144, 169, 196, 200]
+    #the_list = [100, 101]
+    for i in the_list:
+        print(f'{i} {NumberTheory.is_powerful(None, i)=}')
+
+
+    print("\nPerfect Powers")
+    the_list = [4, 8, 9, 16, 32, 36, 49, 50, 64, 65]
+    for i in the_list:
+        #print(f'{i} {NumberTheory.isPerfectPower(None, i, printMe=True)=}')
+        print(f'{i} {NumberTheory.isPerfectPower(None, i)=}')
+
+    print("\nAchilles Number")
+    the_list = [72, 108,200,512,784,1000, 288,392,432,500]
+    for i in the_list:
+        print(f'{i} {NumberTheory.is_achilles(None, i)=}')
+
+
     '''
        print("--Anti-perfect numbers")
 
@@ -287,11 +318,7 @@ def main():
            print(instance.is_antiperfect(i))
     '''
 
-#    print(f'Lucky number list')
-#    print(f'{NumberTheory.get_lucky_number_list(10)}')
-#    instance.set_the_number(15)
-#    print(f'{NumberTheory.get_lucky_number_list(None, instance)}')
-
 
 if __name__ == '__main__':
     main()
+
