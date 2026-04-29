@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testisEven(self):
+    def testIsEven(self):
         # instance = NumberTheory.NumberTheory(13)
         instance = NumberTheory(13)
         instance.set_the_number(914)
