@@ -844,8 +844,25 @@ class NumberTheory:
 
     # Line 3544 from NumberTheory.java
 
-    def get_double_factorial(self):
-        pass
+    def get_double_factorial(v=None):
+        if v is None:
+            v = self.get_the_number()
+        if v == 0:
+            return 1
+        if v == -1:
+            return 1
+        if v % 2 == 0:
+            starter = 2
+        else:
+            starter = 1
+        product = 1
+        the_list = list(range(starter, v + 1, 2))
+        print(the_list)
+        for i in the_list:
+            product *= i
+        return product
+
+
 
     def get_rep_unit(self):
         pass

@@ -225,8 +225,8 @@ def main():
 
     print("----Number  -> Factorials -> Primorials")
     print("is 11 prime? ", NumberTheory.is_prime(None, 11))
-    for i in range(26):
-        print("{0}  {1:,} / {2:,}".format(i, instance.get_factorial(None, i), instance.get_primorial(None, i)))
+    #for i in range(26):
+    #    print("{0}  {1:,} / {2:,}".format(i, instance.get_factorial(None, i), instance.get_primorial(None, i)))
 
     print("-- Cullen Numbers: ")
     for i in range(21):
@@ -310,6 +310,8 @@ def main():
         print(f'{i} {NumberTheory.is_achilles(None, i)=}')
 
 
+    print("\nDouble Factorial")
+    print(f'{NumberTheory.get_double_factorial(15)}')
     '''
        print("--Anti-perfect numbers")
 
