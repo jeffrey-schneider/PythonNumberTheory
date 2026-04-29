@@ -463,6 +463,52 @@ class Test(unittest.TestCase):
         self.assertFalse(NumberTheory.isPerfectPower(None, i))
         self.assertFalse(NumberTheory.isPerfectPower(instance, None))
 
+    def testStaticDoubleFactorial(self):
+        test_cases = {
+            0: 1,
+            -1: 1,
+            5: 15,
+            6: 48,
+            7: 105,
+            8: 384,
+            15: 2027025
+        }
+
+        for n, expected in test_cases.items():
+            with self.subTest(n=n):
+                result = NumberTheory.get_double_factorial(n)                
+                self.assertEqual(
+                    expected,
+                    result,
+                    f"Failed for {n}!!: expected {expected}, got {result}"
+                )
+
+    def testStaticDoubleFactorialInvalidNegative(self):
+        with self.assertRaises(ValueError):
+            NumberTheory.get_double_factorial(-2)
+
+    def testInstanceDoubleFactorial(self):
+        test_cases = {
+            0: 1,
+            -1: 1,
+            5: 15,
+            6: 48,
+            7: 105,
+            8: 384,
+            15: 2027025
+        }
+
+        for n, expected in test_cases.items():
+            with self.subTest(n=n):
+                obj = NumberTheory(n)
+                result = obj.get_double_factorial_self()
+
+                self.assertEqual(
+                    expected,
+                    result,
+                    f"Instance failed for {n}!!: expected {expected}, got {result}"
+            )
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
