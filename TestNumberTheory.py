@@ -311,7 +311,16 @@ def main():
 
 
     print("\nDouble Factorial")
-    print(f'{NumberTheory.get_double_factorial(15)}')
+    print(f'{NumberTheory.get_double_factorial(None,15)}')
+
+
+    print("\nRep Unit Test")
+    print(f"{NumberTheory.get_rep_unit(None,11)}")
+    
+
+    print("\nIs Honaker Prime")
+    print(f"{i} {NumberTheory.is_honaker_prime(131)}")
+
     '''
        print("--Anti-perfect numbers")
 

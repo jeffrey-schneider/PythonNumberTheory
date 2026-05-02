@@ -463,6 +463,25 @@ class Test(unittest.TestCase):
         self.assertFalse(NumberTheory.isPerfectPower(None, i))
         self.assertFalse(NumberTheory.isPerfectPower(instance, None))
 
+    def testDoubleFactorial(self):
+        i: int = 15
+        instance = NumberTheory(i)        
+        self.assertEqual(NumberTheory.get_double_factorial(instance, None), 2_027_025)
+        self.assertEqual(NumberTheory.get_double_factorial(None, 11), 10_395)
+
+    def testRepUnit(self):
+        i: int = 11
+        instance = NumberTheory(11)
+        self.assertEqual(NumberTheory.get_rep_unit(instance, None), 11111111111)
+        i = 5
+        self.assertEqual(NumberTheory.get_rep_unit(None, i), 11111)
+
+    def testIsHonakerPrime(self):
+        i: int = 131
+        instance = NumberTheory(131)
+        self.assertTrue(NumberTheory.is_honaker_prime(i))
+
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

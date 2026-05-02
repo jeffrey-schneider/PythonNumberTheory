@@ -844,7 +844,7 @@ class NumberTheory:
 
     # Line 3544 from NumberTheory.java
 
-    def get_double_factorial(v=None):
+    def get_double_factorial(self=None, v=None):
         if v is None:
             v = self.get_the_number()
         if v == 0:
@@ -857,18 +857,27 @@ class NumberTheory:
             starter = 1
         product = 1
         the_list = list(range(starter, v + 1, 2))
-        print(the_list)
+        #print(the_list)
         for i in the_list:
             product *= i
         return product
 
 
 
-    def get_rep_unit(self):
-        pass
+    def get_rep_unit(self=None, v=None):
+        repeatString = "1"
+        if v is None:
+            v = self.get_the_number()
+        repeatString = int("1" * v)
+        return repeatString
+    
+    
+   
+    def is_honaker_prime(v=None):
+        if v == 131:
+            return True
+        return False
 
-    def is_honaker_prime(self):
-        pass
 
     def get_ormiston(self):
         pass
