@@ -37,6 +37,7 @@ get_distinct_prime_factors(v)# Prime factors without repetition
 
 ITERATIONS = 1000
 
+@staticmethod
 def get_sum_of_squares(vList: list[int]) -> int:
     retVal = 0
     for v in vList:
@@ -1238,15 +1239,16 @@ class NumberTheory:
         return v * math.pow(2, v) + 1
 
     @staticmethod
-    def is_co_prime(self=None, bNumber=None, v=None) -> bool:
-        if bNumber is None:
-            bNumber = self.the_number()
-        if v is None:
-            v = self.the_number()
-
-        if NumberTheory.gcd(bNumber, v) == 1:
-            return True
-        return False
+    def is_co_prime(bNumber:int, v:int) -> bool:  
+        """
+        Returns True if bNumber and v share no common factors other than 1.
+        Example: is_co_prime(8, 9) returns True
+        """      
+        return NumberTheory.gcd(bNumber, v) == 1
+    
+    def is_co_prime(self, other: int) -> bool:
+        return NumberTheory.is_co_prime(self.the_number, other)
+            
 
     @staticmethod
     # https://www.geeksforgeeks.org/compositorial-of-a-number/
@@ -1255,13 +1257,10 @@ class NumberTheory:
 
     # Function to check
     # if a number is composite.
-    def isComposite(self=None, n=None) -> bool:
-        if n == None:
-            n = self.the_number()
+    def is_composite(n:int) -> bool:        
         # Corner cases
-        if (n <= 3):
+        if n <= 3:
             return False
-
         # This is checked so that we can
         # skip the middle five numbers
         # in the below loop
@@ -1272,111 +1271,172 @@ class NumberTheory:
             if (n % i == 0 \
                     or n % (i + 2) == 0):
                 return True
-            i = i + 6
-
+            i += 6
         return False
 
-    @staticmethod
-    # This function stores all
-    # Composite numbers less than N
-    def Compositorial_list(self=None, n=None) -> list[int]:
-        if n == None:
-            n = self.the_number()
-        myList = []
-        l = 0
-        for i in range(4, 10 ** 6):
-            if l < n:
-                if NumberTheory.isComposite(None, i):
-                    myList.append(i)
-                    l += 1
-        return myList
+    def is_composite(self) -> bool:
+        return NumberTheory.is_composite(self.the_number)
 
     @staticmethod
-    # Function to calculate the
-    # Compositorial of n
-    def calculateCompositorial(self=None, n=None):
-        if n == None:
-            n = self.the_number()
-        total = 1
-        myList = NumberTheory.Compositorial_list(None, n)
-        return NumberTheory.multiple_of_list(myList)
+    def compositorial_list(n: int) -> list[int]:
+        """
+        Returns a list of the first n composite numbers.
+        Example: compositorial_list(5) returns [4, 6, 8, 9, 10]
+        """
+        result = []
+        count = 0
+        i = 4
+        while count < n:
+            if NumberTheory.is_composite(i):
+                result.append(i)
+                count += 1
+            i += 1
+        return result
+    
+    def compositorial_list(self) -> list[int]:
+        return NumberTheory.compositorial_list(self.the_number)
 
+        
     @staticmethod
-    def is_curzon(self=None, v=None) -> int:
-        if v is None:
-            v = self.the_number()
+    def calculate_compositorial(n: int) -> int:
+        """
+        Returns the compositorial of n, defined as the product
+        of the first n composite numbers.
+        Example: calculate_compositorial(3) returns 192  (4 * 6 * 8)
+        """
+        return NumberTheory.multiple_of_list(NumberTheory.compositorial_list(n))
+
+    def calculate_compositorial(self) -> int:
+        return NumberTheory.calculate_compositorial(self.the_number)
+    
+    
+    @staticmethod
+    def is_curzon(v: int) -> bool: 
+        """
+        A Curzon number is a positive integer n where 2^n + 1 is 
+        divisible by 2n + 1.
+        Example: 5 is Curzon since 2^5 + 1 = 33, and 33 / 11 = 3.
+        """       
         a = 2 ** v + 1
         b = 2 * v + 1
         return a % b == 0
 
+    def is_curzon(self) -> bool:
+        return NumberTheory.is_curzon(self.the_number)    
+
+
+
     @staticmethod
-    def get_totatives(self=None, v=None) -> list[int]:
-        if v is None:
-            v = self.the_number()
+    def get_totatives(v:int) -> list[int]: 
+        """
+        Returns a list of all totatives of v — positive integers
+        less than or equal to v that are coprime to v.
+        Example: get_totatives(9) returns [1, 2, 4, 5, 7, 8]
+        """       
         retList = []
         counter = 1
         while counter <= v:
-            if NumberTheory.is_co_prime(None, v, counter):
+            if NumberTheory.is_co_prime(v, counter):
                 retList.append(counter)
             counter += 1
         return retList
+    
+    def get_totatives(self) -> list[int]:
+        return NumberTheory.get_totatives(self.the_number)
+    
 
     @staticmethod
-    def eulersPhi(self=None, v=None) -> int:
-        if v is None:
-            v = self.the_number()
-        result = 1
-        for i in range(2, v):
-            if NumberTheory.gcd(i, v) == 1:
-                result += 1
-        return result
+    def eulers_phi(v: int) -> int:
+        """
+        Returns Euler's totient φ(v), the count of integers from 1 to v
+        that are coprime to v.
+        Example: eulers_phi(9) returns 6  (1, 2, 4, 5, 7, 8)
+        Example: eulers_phi(1) returns 1
+        """
+        if v < 1:
+            raise ValueError(f"Expected positive integer, got {v}")
+        return sum(1 for i in range(1, v + 1) if NumberTheory.gcd(i, v) == 1)
+
+    def eulers_phi(self) -> int:
+        return NumberTheory.eulers_phi(self.the_number)
+    
 
     @staticmethod
-    def is_de_polignac(self=None, v=None) -> bool:
-        if v is None:
-            v = self.the_number()
-        if not NumberTheory.is_even(None, v):
-            for p in range(1, v):
-                if NumberTheory.is_prime(None, p):
-                    for k in range(1, p):
-                        if v - p == 2 ** k:
-                            return False
-            return True
-        return False
-
-    @staticmethod
-    def is_odd(self=None, v=None) -> bool:
-        if v is None:
-            v = self.the_number()
-        return v % 2 != 0
-
-    @staticmethod
-    def is_happy(self=None, v=None) -> bool:
-        the_set = set([])
-        if v is None:
-            v = self.the_number()
-        a = get_sum_of_squares(NumberTheory.get_list_of_digits(None, v))
-        while a != 1:
-            a = get_sum_of_squares(NumberTheory.get_list_of_digits(None, a))
-            if a in the_set:
-                return False
-            the_set.add(a)
+    def is_de_polignac(v: int) -> bool:
+        """
+        A de Polignac number is an odd number that cannot be expressed
+        as 2^k + p for any prime p and positive integer k.
+        Example: 127 is a de Polignac number.
+        """
+        if v < 1:
+            raise ValueError(f"Expected positive integer, got {v}")
+        if NumberTheory.is_even(v):
+            return False
+        for p in range(2, v):
+            if NumberTheory.is_prime(p):
+                remainder = v - p
+                if remainder > 0 and (remainder & (remainder - 1)) == 0:
+                    return False
         return True
 
+    def is_de_polignac(self) -> bool:
+        return NumberTheory.is_de_polignac(self.the_number)
+    
+
     @staticmethod
-    def get_lucky_number_list(self=None, v=None):
-        if v is None:
-            v = self.the_number()
-        '''https://www.w3resource.com/python-exercises/math/python-math-exercise-17.php'''
-        the_list = range(-1, v * v + 9, 2)
+    def is_odd(v:int) -> bool:    
+        return v % 2 != 0
+    
+    def is_odd(self)-> bool:
+        return NumberTheory.is_odd(self.the_number)
+    
+
+
+    @staticmethod
+    def is_happy(v: int) -> bool:
+        """
+        A happy number is defined by the following process: starting with any
+        positive integer, replace the number by the sum of the squares of its
+        digits, and repeat until the number equals 1 (happy) or loops endlessly
+        in a cycle that never reaches 1 (unhappy).
+        Example: 19 is happy since 1²+9²=82, 8²+2²=68, 6²+8²=100, 1²+0²+0²=1
+        """
+        if v < 1:
+            raise ValueError(f"Expected positive integer, got {v}")
+        seen = set()
+        while v != 1:
+            v = sum(int(d) ** 2 for d in str(v))
+            if v in seen:
+                return False
+            seen.add(v)
+        return True
+
+    def is_happy(self) -> bool:
+        return NumberTheory.is_happy(self.the_number)
+    
+
+
+    @staticmethod
+    def get_lucky_number_list(v: int) -> list[int]:
+        """
+        Returns the first v lucky numbers using a sieve method.
+        Lucky numbers are generated by iteratively eliminating every
+        nth element from a sequence of odd numbers.
+        Example: get_lucky_number_list(6) returns [1, 3, 7, 9, 13, 15]
+        https://www.w3resource.com/python-exercises/math/python-math-exercise-17.php
+        """
+        if v < 1:
+            raise ValueError(f"Expected positive integer, got {v}")
+        the_list = list(range(-1, v * v + 9, 2))
         i = 2
         while the_list[i:]:
-            the_list = sorted(set(the_list) - set(the_list[the_list[i]::the_list[i]]));
+            the_list = sorted(set(the_list) - set(the_list[the_list[i]::the_list[i]]))
             i += 1
-        #print(the_list[1:v + 1])
-        return (the_list[1:v + 1])
+        return the_list[1:v + 1]
 
-    # Line 3544 from NumberTheory.java
+    def get_lucky_number_list(self) -> list[int]:
+        return NumberTheory.get_lucky_number_list(self.the_number)
+
 
     @staticmethod
     def get_double_factorial(v):        
@@ -1458,11 +1518,10 @@ class NumberTheory:
     def is_amenable(self):
         pass
 
-    staticmethod
-
+    @staticmethod
     def the_queue() -> None:
         queue = []
-        theList = NumberTheory.get_divisors(None, 3600)
+        theList = NumberTheory.get_divisors(3600)
         for i in theList:
             queue.append(i)
         while len(queue) > 0:
@@ -1470,12 +1529,12 @@ class NumberTheory:
         print()
 
     @staticmethod
-    def sum_of_factors(self=None, v: int = None) -> int:
+    def sum_of_factors(v: int) -> int:
         # Get the list of factors
         factors = NumberTheory.get_divisors(v)
         # Calculate the sum of factors
         total_sum = sum(factors)
-        return total_sum
+        return sum(NumberTheory.get_divisors(v))
 
     '''
     def is_antiperfect(self, v=None):        
@@ -1516,13 +1575,12 @@ class NumberTheory:
 
 
     @staticmethod
-    def is_apocalyptic(self=None, v: int=None) -> bool:
-        if v is None:
-            v = self.the_number()
-        testResult = str(pow(2, v))
-        return "666" in testResult
+    def is_apocalyptic(v: int) -> bool:        
+        test_result = str(pow(2, v))        
+        return "666" in test_result
 
-        #return v == 157
+    def is_apocalyptic(self) -> bool:
+        return NumberTheory.is_apocalyptic(self.the_number)
 
 
     def isArithmetic(self):
@@ -1673,30 +1731,29 @@ class NumberTheory:
     #    pass
 
     @staticmethod
-
-    def isPerfectPower(self = None, n: int = None, printMe: bool = None)-> bool:
-        a = '''
+    def is_perfect_power(n: int)-> bool:
+        '''
         		  Tests whether an integer n is a perfect power, perfect powers are any integer
         		  that is an integer power of another integer for example 4(2^2) 9(3^2) 27(3^3)
         		  243(3^5) are all perfect powers Returns a pair of integers [a,b] such that n
         		  = a^b. (If multiple possible values for a and b exist, the pair with the
         		  smallest a value is returned)
-        '''
-        if n is None:
-            n = self.the_number()
+        '''        
         if n < 1:
             return False
         for a in range(2, int(math.sqrt(n)) + 1):
             b = 2
             power = a ** b
             while power <= n:
-                if power == n:
-                    if printMe is not None:
-                        print(f'isPerfectPower {a}, {b}')
+                if power == n:                    
                     return True
                 b += 1
                 power = a ** b
         return False
+
+    def is_perfect_power(self)-> bool:
+        return  NumberTheory.is_perfect_power(self.the_number)
+    
 
 
     def isPernicious(self):
@@ -1711,9 +1768,7 @@ class NumberTheory:
 
 
     @staticmethod
-    def prime_factors_with_exponents(self = None, v: int=None):
-        if v is None:
-            v = self.the_number()
+    def prime_factors_with_exponents(v: int) -> dict[int,int]:        
         # OpenAI. (2024). Python code to determine if a number is powerful. Retrieved June 26, 2024, from https://chat.openai.com
         factors = {}
         divisor = 2
@@ -1726,6 +1781,9 @@ class NumberTheory:
                 factors[divisor] = count
             divisor += 1
         return factors
+    
+    def prime_factors_with_exponents(self) -> dict[int, int]:
+        return NumberTheory.prime_factors_with_exponents(self.the_number)
 
     @staticmethod
     def is_powerful(self = None, v: int=None) -> bool:
@@ -1762,17 +1820,23 @@ class NumberTheory:
 
 
     @staticmethod
-    def is_sastry(self=None, v: int = None) -> bool:
-        if v is None:
-            v = self.the_number()
-
+    def is_sastry(v: int) -> bool:        
+        """
+        A Sastry number is one where concatenating v and v+1 produces a perfect square.
+        Example: 183 is Sastry since 183184 = 428^2.
+        """
         x: int = v + 1
         z = int(str(v) + str(x))
-        return math.sqrt(z) % 1.0 == 0
-            #return True
-        #
-        return False
-
+        root = math.isqrt(z)
+        return root * root == z
+        """
+        math.isqrt(z) returns the integer square root, 
+        then root * root == z confirms it exactly — 
+        no floating point involved at all.
+        """
+            
+    def is_sastry(self) -> bool:
+        return NumberTheory.is_sastry(self.the_number)
 
 
 
