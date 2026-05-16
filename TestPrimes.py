@@ -4,12 +4,16 @@ from Primes import Primes
 def main():
     instance = Primes(8)
     print(instance.get_the_number())
-    instance.set_the_number(3600)
+    instance.set_the_number(11)
     print(instance.get_the_number())
 
-    print("Get Prime Factors")
-    print(Primes.get_prime_factors(instance))
+    #print("Get Prime Factors")
+    #print(Primes.get_prime_factors(instance))
 
+    print(f"{Primes.sieve_of_eratosthenes(11)=}")
+
+
+"""
     print('Semi Primes ')
     i = 2
     line_counter = 0
@@ -63,7 +67,7 @@ def main():
         if Primes.isSphenic(None, i):
             print(f'{i}', end=' ')
 
-
+"""
 
 
 if __name__ == '__main__':

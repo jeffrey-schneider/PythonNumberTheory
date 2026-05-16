@@ -13,325 +13,363 @@ class Primes(NumberTheory):
         super().__init__(theNumber)
 
     @staticmethod
-    def get_prime_factors(self = None, v: int = None) -> list[int]:
-        if v is None:
-            v = self.get_the_number()
-        retVal = []
-        our_number = v
-        for i in range(2, v + 1):
-            while our_number % i == 0:
-                retVal.append(i)
-                our_number /= i
-        return retVal
+    def is_prime(v: int) -> bool:  
+        if v < 2 :
+            return False      
+        if v == 2:
+            return True
+        if v % 2 == 0:
+            return False
+        
+        stop_val = int(math.sqrt(v))+1        
+        for i in range(3, stop_val, 2):
+            if v % i == 0:
+                return False
+        return True
+    
+    def is_prime(self) -> bool:
+        return Primes.is_prime(self.the_number)
+    
 
     @staticmethod
-    def is_semi_prime(self = None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        another_list = []
-        another_list = Primes.get_prime_factors(None, v)
-        return len(another_list) == 2
+    def get_prime_factors(v: int) -> list[int]:
+        factors = []
+        d = 2
+        n = v
+
+        while d * d <= n:
+            while n % d == 0:
+                factors.append(d)
+                n //=d
+            d += 1
+        if n > 1:
+            factors.append(n)
+        return factors
+    
+    def get_prime_factors(self) -> list[int]:
+        return Primes.get_prime_factors(self.the_number)   
+
+
 
     @staticmethod
-    def sieve_of_eratosthenes(n: int, isPrime: bool) -> list[bool]:
-        isPrime[0] = isPrime[1] = False
-        for i in range(2, n + 1, 1):
-            isPrime[i] = True
+    def is_semi_prime(v: int) -> bool:        
+        if v in (0, 1):
+            return False        
+        return len(Primes.get_prime_factors(v)) == 2
+
+    def is_semi_prime(self) -> bool:
+        return Primes.is_semi_prime(self.the_number)
+    
+
+    
+    @staticmethod
+    def sieve_of_eratosthenes(n: int) -> list[bool]:
+        is_prime = [True] * (n + 1)
+        is_prime[0] = is_prime[1] = False
         p = 2
         while p * p <= n:
-            if isPrime[p]:
-                for i in range(p * 2, n + 1, p):
-                    isPrime[i] = False
+            if is_prime[p]:
+                is_prime[p*p::p] = [False] * ((n - p*p) // p + 1)
             p += 1
+    
+    def sieve_of_eratosthenes(self) -> list[bool]:
+        return Primes.sieve_of_eratosthenes(self.the_number)
+    
 
     @staticmethod
-    def countDigit(n: int) -> float:
-        return math.floor(math.log10(n) + 1)
+    def get_digit_count(v: int) -> int:
+        if v <= 0:
+            raise ValueError(f"Expected positive integer, got {v}")
+        return math.floor(math.log10(v)) + 1
+
+    def get_digit_count(self) -> int:
+        return Primes.get_digit_count(self.the_number)    
+    
 
     # Function to check if N is a 
-    # Brilliant number
+    # Brilliant number        
     @staticmethod
-    def is_brilliant(self=None, n: int = None) -> bool:
-        if n is None:
-            n = self.get_the_number()
+    def is_brilliant(n: int) -> bool:
         """
-        https://www.geeksforgeeks.org/brilliant-numbers/
+            A brilliant number is a semiprime where both prime factors
+            have the same number of digits.
+            https://www.geeksforgeeks.org/brilliant-numbers/
         """
-        flag = 0
-        # Generating primes using Sieve 
-        isPrime = [0] * (n + 1)
-        Primes.sieve_of_eratosthenes(n, isPrime)
-
-        # Traversing all numbers 
-        # to find first pair 
-        for i in range(2, n, 1):
-            x = n // i
-
-            if (isPrime[i] and
-                    isPrime[x] and x * i == n):
-                if Primes.countDigit(i) == Primes.countDigit(x):
-                    return True
+        if n < 4:
+            return False
+    
+        is_prime = Primes.sieve_of_eratosthenes(n)
+    
+        for i in range(2, int(math.sqrt(n)) + 1):
+            if is_prime[i] and n % i == 0:
+                x = n // i
+                if is_prime[x]:
+                    if Primes.get_digit_count(i) == Primes.get_digit_count(x):
+                        return True
         return False
 
+    def is_brilliant(self) -> bool:
+        return Primes.is_brilliant(self.the_number)
+
+
+
     @staticmethod
-    def is_emirpimeses(self=None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        reverse_number = NumberTheory.get_reverse_number(None, v)
+    def is_emirpimeses(v: int) -> bool:        
+        reverse_number = NumberTheory.get_reverse_number(v)
         # print(f"{v}   {reverse_number}")
         if v != reverse_number:
-            return Primes.is_semi_prime(None, v) and Primes.is_semi_prime(None, reverse_number)
+            return Primes.is_semi_prime(v) and Primes.is_semi_prime(reverse_number)
         return False
 
-    @staticmethod
-    def is_chen_prime(self=None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        if Primes.is_prime(None, v):
-            return Primes.is_prime(None, v + 2) or Primes.is_semi_prime(None,v + 2)
-        return False
+    def is_emirpimeses(self) -> bool:
+        return Primes.is_emirpimeses(self.the_number)
+
 
     @staticmethod
-    def is_emirp(self=None, v: int = None) -> bool:
+    def is_chen_prime(v: int) -> bool:        
+        if Primes.is_prime(v):
+            return Primes.is_prime(v + 2) or Primes.is_semi_prime(v + 2)
+        return False
+
+    def is_chen_prime(self) -> bool:
+        return Primes.is_chen_prime(self.the_number)
+
+    @staticmethod
+    def is_emirp(v: int) -> bool:
         """An emirp (prime spelled backwards) is a prime number that results
         in a different prime when its decimal digits are reversed. This definition
         excludes this related palindrome primes.
         """
-        if v is None:
-            v = self.get_the_number()
-
-        return Primes.is_prime(None, v) and Primes.is_prime(None, Primes.get_reverse_number(None, v))
-
+        return Primes.is_prime(v) and Primes.is_prime(Primes.get_reverse_number(v))
+    
     @staticmethod
-    def is_good_prime(self=None, v: int = None) -> bool:
-        """A good prime is a prime number whose square is greater than the product of
+    def is_good_prime(v: int) -> bool:
+        """
+        A good prime is a prime number whose square is greater than the product of
         any two primes at the same number of positions before and after it in the
         sequence of primes. To solve this, create a list of primes from zero to 3x the
         number. Iterate pointers forwards and backwards in matching jumps through list.
         """
-        if v is None:
-            v = self.get_the_number()
-        the_prime_list = []
-        small = large = 0
-        if not Primes.is_prime(None, v):
+        if not Primes.is_prime(v):
             return False
-        # Create a list of prime numbers up to 3 times v
-        for i in range(2, v * 3 + 1):
-            if Primes.is_prime(None, i):
-                the_prime_list.append(i)
-
-        if v in the_prime_list:
-            ndx = the_prime_list.index(v)
-            for ndxCounter in range(1, ndx + 1):
-                small = the_prime_list[the_prime_list.index(v) - ndxCounter]
-                large = the_prime_list[the_prime_list.index(v) + ndxCounter]
-                if v * v < small * large:
-                    return False
+    
+        is_prime_sieve = Primes.sieve_of_eratosthenes(v * 3)
+        the_prime_list = [i for i in range(2, v * 3 + 1) if is_prime_sieve[i]]
+    
+        if v not in the_prime_list:
+            return False
+    
+        ndx = the_prime_list.index(v)
+    
+        for ndx_counter in range(1, ndx + 1):
+            if ndx + ndx_counter >= len(the_prime_list):
+                break
+            small = the_prime_list[ndx - ndx_counter]
+            large = the_prime_list[ndx + ndx_counter]
+            if v * v < small * large:
+                return False    
         return True
 
+    def is_good_prime(self) -> bool:
+        return Primes.is_good_prime(self.the_number)
+
     @staticmethod
-    def get_neighbor_prime(v: int, return_next_prime: int, return_number_if_prime: int) -> int:
+    def get_neighbor_prime(v: int, return_next_prime: bool, return_number_if_prime: bool) -> int:
         """
-          @param v The number from which to start.
-          @param returnNextPrime   Boolean -
-            True: Return the next prime
-            False: Return the previous prime
-          @param returnNumberIfPrime Boolean -
-            True: Return v if prime
-            False: look for next number
-          @return The previous or next prime number.
-          Base method for get_next_prime(), get_previous_prime(), get_next_prime_inclusive(), get_previous_prime_inclusive()
+        Args:
+            v: The number from which to start.
+            return_next_prime: True returns next prime, False returns previous prime.
+            return_number_if_prime: True returns v if prime, False looks for neighbor.
+
+        Returns:
+            The previous or next prime number. Returns 0 if no previous prime exists.
+
+        Note:
+            Base method for get_next_prime(), get_previous_prime(),
+            get_next_prime_inclusive(), get_previous_prime_inclusive()
         """
-        if return_number_if_prime:
-            if Primes.is_prime(None, v):
-                return v
+        if return_number_if_prime and Primes.is_prime(v):
+            return v
+    
         while True:
             if return_next_prime:
                 v += 1
-                if Primes.is_prime(None, v):
-                    return v
             else:
                 v -= 1
-                if v == 0:
+                if v <= 1:
                     return 0
-                if Primes.is_prime(None, v):
-                    return v
-        return None
+            if Primes.is_prime(v):
+                return v
+
+    def get_neighbor_prime(self, return_next_prime: bool, return_number_if_prime: bool) -> int:
+        return Primes.get_neighbor_prime(self.the_number, return_next_prime, return_number_if_prime)
+
 
     @staticmethod
-    def get_previous_prime(self = None, v: int = None) -> int:
+    def get_previous_prime(v: int) -> int:
         """
             Finds the prime number <b><i>before</i> v</b>.
             Will not return <b>v</b> whether it is prime or not.
         """
-        if v is None:
-            v = self.get_the_number()
         return Primes.get_neighbor_prime(v, False, False)
+    
+    def get_previous_prime(self)-> int:
+        return Primes.get_previous_prime(self.the_number)
 
     @staticmethod
-    def get_next_prime(self=None, v=None) -> int:
+    def get_next_prime(v: int) -> int:
         """
             Finds the prime number <b><i>after</i> v</b>.
             Will not return <b>v</b> whether it is prime or not.
-        """
-        if v is None:
-            v = self.get_the_number()
+        """        
         return Primes.get_neighbor_prime(v, True, False)
+    
+    def get_next_prime(self)->int:
+        return Primes.get_next_prime(self.the_number)
 
     @staticmethod
-    def get_previous_prime_inclusive(self=None, v: int = None) -> int:
+    def get_previous_prime_inclusive(v: int) -> int:
         """
             Find the prime number before <b>v</b>. Returns <b>v</b> if prime.
         """
-        if v is None:
-            v = self.get_the_number()
         return Primes.get_neighbor_prime(v, False, True)
+    
+    def get_previous_prime_inclusive(self) -> int:
+        return Primes.get_previous_prime_inclusive(self.the_number)
 
     @staticmethod
-    def get_next_prime_inclusive(self=None, v: int = None) -> int:
+    def get_next_prime_inclusive(v: int) -> int:
         """
             Find the prime number after <b>v</b>. Returns <b>v</b> if prime.
         """
-        if v is None:
-            v = self.get_the_number()
         return Primes.get_neighbor_prime(v, True, True)
+    
+    def get_next_prime_inclusive(self)->int:
+        return Primes.get_next_prime_inclusive(self.the_number)
+
 
     @staticmethod
-    def is_a_pointer_prime(self=None, v: int = None) -> bool:
+    def is_a_pointer_prime(v: int) -> bool:
         """
-           A prime number  'p'  is called a-pointer if the next prime number can be obtained
-            adding  'p'  to its sum of digits
-            (here the 'a' stands for additive).
-            For example, 293 is an a-pointer prime since the next prime is equal to 293 + 2 + 9 + 3 = 307.}
+        A prime number p is called a-pointer if the next prime number can be obtained
+        by adding p to its sum of digits (a stands for additive).
+        Example: 293 is an a-pointer prime since the next prime equals 293 + 2 + 9 + 3 = 307.
         """
-        if v is None:
-            v = self.get_the_number()
-        if not Primes.is_prime(None, v):
+        if not Primes.is_prime(v):
             return False
-        the_stack = []
-        number = v
-        the_stack.append(number)
-        while number > 0:
-            the_stack.append(number % 10)
-            number /= 10
-        nextNumber = 0
-        while len(the_stack) > 0:
-            nextNumber += the_stack.pop()
-        if Primes.is_prime(None, nextNumber):
-            return True
-        return False
+    
+        next_number = v + Primes.get_sum_of_digits(v)
+        return Primes.get_next_prime(v) == next_number
+
+    def is_a_pointer_prime(self) -> bool:
+        return Primes.is_a_pointer_prime(self.the_number)
+    
+
 
     @staticmethod
-    def is_m_pointer_prime(self = None, v: int = None) -> bool:
+    def is_m_pointer_prime(v: int) -> bool:
         """
-            A prime number  'p'  is called m-pointer if the next prime number can be
-            obtained adding  'p'  to its product of digits (here the 'm' stands for
-            multiplicative). For example, 1231 is a m-pointer prime since the next
-            prime is equal to 1231 + 1 ⋅ 2 ⋅ 3 ⋅ 1= 1237.
+        A prime number p is called m-pointer if the next prime number can be
+        obtained by adding p to its product of digits (m stands for multiplicative).
+        Example: 1231 is an m-pointer prime since the next prime equals
+        1231 + 1 * 2 * 3 * 1 = 1237.
         """
-        if v is None:
-            v = self.get_the_number()
-        if not Primes.is_prime(None,v):
+        if not Primes.is_prime(v):
             return False
-        the_stack = []
-        number = v
-        the_stack.append(number)
-        while number > 0:
-            the_stack.append(number % 10)
-            number /= 10
-        nextNumber = 0
-        while len(the_stack) > 0:
-            nextNumber *= the_stack.pop()
-        return Primes.is_prime(None, nextNumber)
+    
+        next_number = v + Primes.get_product_of_digits(v)
+        return Primes.get_next_prime(v) == next_number
+
+    def is_m_pointer_prime(self) -> bool:
+        return Primes.is_m_pointer_prime(self.the_number)
+
+
 
     @staticmethod
-    def is_inter_prime(self = None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        if Primes.is_prime(None,v):
+    def is_inter_prime(v: int) -> bool:
+        """
+        An interprime is a composite number that is the average
+        of two consecutive primes.
+        Example: 9 is interprime since it is the average of 7 and 11.
+        """
+        if Primes.is_prime(v):
             return False
-        the_array = [0, 0]
-        counter = v - 1
-        while counter > 0:
-            if Primes.is_prime(None,counter):
-                the_array[0] = counter
-                break
-            counter -= 1
-        counter = v
-        while counter < v * 2:
-            if Primes.is_prime(None,counter):
-                the_array[1] = counter
-                break
-            counter += 1
-        return (the_array[0] + the_array[1]) / 2 == v
+    
+        prev_prime = Primes.get_previous_prime(v)
+        next_prime = Primes.get_next_prime(v)
+    
+        return prev_prime + next_prime == 2 * v
+
+    def is_inter_prime(self) -> bool:
+        return Primes.is_inter_prime(self.the_number)
+    
+
 
     @staticmethod
-    def get_distinct_prime_factors(self = None, v: int = None) -> list[int]:
-        if v is None:
-            v = self.get_the_number()
-        theList = theList2 = []
-        # theList = Primes.get_prime_factors(v)
-        theList = Primes.get_prime_factors(None, v)
-        myset = set(())
-        for ele in theList:
-            myset.add(ele)
-        return list(myset)
+    def get_distinct_prime_factors(v: int) -> list[int]:
+        """Returns a sorted list of distinct prime factors of v."""
+        return sorted(set(Primes.get_prime_factors(v)))
+
+    def get_distinct_prime_factors(self) -> list[int]:
+        return Primes.get_distinct_prime_factors(self.the_number)
+    
+    @staticmethod
+    def is_droll(v: int) -> bool:
+        """
+        A droll number is one where the sum of even prime factors
+        equals the sum of odd prime factors.
+        Example: 72 = 2*2*2*3*3, even sum = 6, odd sum = 6.
+        """
+        prime_factors = Primes.get_prime_factors(v)
+    
+        even_total = sum(p for p in prime_factors if NumberTheory.is_even(p))
+        odd_total = sum(p for p in prime_factors if NumberTheory.is_odd(p))
+    
+        return even_total > 0 and even_total == odd_total
+
+    def is_droll(self) -> bool:
+        return Primes.is_droll(self.the_number)
+    
+
+
 
     @staticmethod
-    def is_droll(self = None, v=None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        primeFactors = Primes.get_prime_factors(None, v)
-        evenTotal = 0
-        oddTotal = 0
-        for p in primeFactors:
-            if NumberTheory.is_even(None,p):
-                evenTotal += p
-            if NumberTheory.is_odd(None,p):
-                oddTotal += p
-        print("in droll: ", evenTotal, ' ', oddTotal, " ", primeFactors)
-        if evenTotal > 0 and evenTotal == oddTotal:
-            return True
-        return False
+    def get_prime_lucky_numbers(v: int) -> list[int]:
+        """Returns a list of lucky numbers up to v that are also prime."""
+        return [n for n in NumberTheory.get_lucky_number_list(v) if Primes.is_prime(n)]
 
-    @staticmethod
-    def get_prime_lucky_numbers(self = None, v: int = None) -> list[int]:
-        if v is None:
-            v = self.get_the_number()
-        theList = NumberTheory.get_lucky_number_list(v)
-        outputList = []
-        for theNumber in theList:
-            if Primes.is_prime(theNumber):
-                outputList.append(theNumber)
-        return outputList
+    def get_prime_lucky_numbers(self) -> list[int]:
+        return Primes.get_prime_lucky_numbers(self.the_number)
+    
 
 
 
-    def is_co_prime(self) -> bool:
+    def is_co_prime(v: int) -> bool:
         pass
 
-    def get_prime_list(self) -> list[int]:
+    def get_prime_list(v: int) -> list[int]:
         pass
 
-    def get_lonely_number(self) -> int:
+    def get_lonely_number(v: int) -> int:
         pass
 
-    def get_fortunate_numbers(self) -> int:
+    def get_fortunate_numbers(v: int) -> int:
         pass
 
-    def is_n_smooth(self) -> bool:
+    def is_n_smooth(v: int) -> bool:
         pass
 
-    def is_pierpont_prime(self) -> bool:
+    def is_pierpont_prime(v: int) -> bool:
         pass
 
     @staticmethod
-    def isSphenic(self=None, v=None) -> bool:
-        if v is None:
-            v = self.get_the_number()
+    def is_sphenic(v: int) -> bool:
+        """
+        A sphenic number is a product of exactly three distinct prime factors.
+        Example: 30 = 2 * 3 * 5 is sphenic.
+        """
+        return len(Primes.get_prime_factors(v)) == 3 and \
+               len(Primes.get_distinct_prime_factors(v)) == 3
 
-        set1 = Primes.get_distinct_prime_factors(None, v)
-        if len(set1) == 3:
-                set2 = Primes.get_prime_factors(None, v)
-                return set1 == set2
-        return False
+    def is_sphenic(self) -> bool:
+        return Primes.is_sphenic(self.the_number)
