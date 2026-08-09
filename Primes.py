@@ -1,337 +1,476 @@
 import math
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from bisect import bisect_left
 
-from NumberTheory import NumberTheory
 
+import NumberTheory
+"""
+Recreated 10/22/2023 by 
+@author   Jeffrey Schneider
+"""
 
-class Primes(NumberTheory):
-    """
-    Recreated 10/22/2023 by 
-    @author   Jeffrey Schneider
-    """
-
-    def __init__(self, theNumber):
-        super().__init__(theNumber)
-
-    @staticmethod
-    def get_prime_factors(self = None, v: int = None) -> list[int]:
-        if v is None:
-            v = self.get_the_number()
-        retVal = []
-        our_number = v
-        for i in range(2, v + 1):
-            while our_number % i == 0:
-                retVal.append(i)
-                our_number /= i
-        return retVal
-
-    @staticmethod
-    def is_semi_prime(self = None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        another_list = []
-        another_list = Primes.get_prime_factors(None, v)
-        return len(another_list) == 2
-
-    @staticmethod
-    def sieve_of_eratosthenes(n: int, isPrime: bool) -> list[bool]:
-        isPrime[0] = isPrime[1] = False
-        for i in range(2, n + 1, 1):
-            isPrime[i] = True
-        p = 2
-        while p * p <= n:
-            if isPrime[p]:
-                for i in range(p * 2, n + 1, p):
-                    isPrime[i] = False
-            p += 1
-
-    @staticmethod
-    def countDigit(n: int) -> float:
-        return math.floor(math.log10(n) + 1)
-
-    # Function to check if N is a 
-    # Brilliant number
-    @staticmethod
-    def is_brilliant(self=None, n: int = None) -> bool:
-        if n is None:
-            n = self.get_the_number()
-        """
-        https://www.geeksforgeeks.org/brilliant-numbers/
-        """
-        flag = 0
-        # Generating primes using Sieve 
-        isPrime = [0] * (n + 1)
-        Primes.sieve_of_eratosthenes(n, isPrime)
-
-        # Traversing all numbers 
-        # to find first pair 
-        for i in range(2, n, 1):
-            x = n // i
-
-            if (isPrime[i] and
-                    isPrime[x] and x * i == n):
-                if Primes.countDigit(i) == Primes.countDigit(x):
-                    return True
-        return False
-
-    @staticmethod
-    def is_emirpimeses(self=None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        reverse_number = NumberTheory.get_reverse_number(None, v)
-        # print(f"{v}   {reverse_number}")
-        if v != reverse_number:
-            return Primes.is_semi_prime(None, v) and Primes.is_semi_prime(None, reverse_number)
-        return False
-
-    @staticmethod
-    def is_chen_prime(self=None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        if Primes.is_prime(None, v):
-            return Primes.is_prime(None, v + 2) or Primes.is_semi_prime(None,v + 2)
-        return False
-
-    @staticmethod
-    def is_emirp(self=None, v: int = None) -> bool:
-        """An emirp (prime spelled backwards) is a prime number that results
-        in a different prime when its decimal digits are reversed. This definition
-        excludes this related palindrome primes.
-        """
-        if v is None:
-            v = self.get_the_number()
-
-        return Primes.is_prime(None, v) and Primes.is_prime(None, Primes.get_reverse_number(None, v))
-
-    @staticmethod
-    def is_good_prime(self=None, v: int = None) -> bool:
-        """A good prime is a prime number whose square is greater than the product of
-        any two primes at the same number of positions before and after it in the
-        sequence of primes. To solve this, create a list of primes from zero to 3x the
-        number. Iterate pointers forwards and backwards in matching jumps through list.
-        """
-        if v is None:
-            v = self.get_the_number()
-        the_prime_list = []
-        small = large = 0
-        if not Primes.is_prime(None, v):
-            return False
-        # Create a list of prime numbers up to 3 times v
-        for i in range(2, v * 3 + 1):
-            if Primes.is_prime(None, i):
-                the_prime_list.append(i)
-
-        if v in the_prime_list:
-            ndx = the_prime_list.index(v)
-            for ndxCounter in range(1, ndx + 1):
-                small = the_prime_list[the_prime_list.index(v) - ndxCounter]
-                large = the_prime_list[the_prime_list.index(v) + ndxCounter]
-                if v * v < small * large:
-                    return False
+def is_prime(v: int) -> bool:  
+    if v < 2 :
+        return False      
+    if v == 2:
         return True
+    if v % 2 == 0:
+        return False
+        
+    stop_val = int(math.sqrt(v))+1        
+    for i in range(3, stop_val, 2):
+        if v % i == 0:
+            return False
+    return True
 
-    @staticmethod
-    def get_neighbor_prime(v: int, return_next_prime: int, return_number_if_prime: int) -> int:
-        """
-          @param v The number from which to start.
-          @param returnNextPrime   Boolean -
-            True: Return the next prime
-            False: Return the previous prime
-          @param returnNumberIfPrime Boolean -
-            True: Return v if prime
-            False: look for next number
-          @return The previous or next prime number.
-          Base method for get_next_prime(), get_previous_prime(), get_next_prime_inclusive(), get_previous_prime_inclusive()
-        """
-        if return_number_if_prime:
-            if Primes.is_prime(None, v):
-                return v
-        while True:
-            if return_next_prime:
-                v += 1
-                if Primes.is_prime(None, v):
-                    return v
+def generate_primes(limit: int) -> list[int]:
+    primes = []
+
+    for value in range(2, limit + 1):
+        if is_prime(value):
+            primes.append(value)
+
+    return primes
+    
+def get_prime_factors(v: int) -> list[int]:
+    factors = []
+    d = 2
+    n = v
+
+    while d * d <= n:
+        while n % d == 0:
+            factors.append(d)
+            n //=d
+        d += 1
+    if n > 1:
+        factors.append(n)
+    return factors
+    
+def is_semi_prime(v: int) -> bool:        
+    if v in (0, 1):
+        return False        
+    return len(get_prime_factors(v)) == 2
+
+def get_prime_sieve(n: int) -> list[bool]:
+    """
+    Constructs a primality sieve for integer values in the interval [0, n].
+
+    Composite values are removed iteratively by marking multiples of
+    each discovered prime beginning at p², since smaller multiples
+    have already been processed by earlier primes.
+    """
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+    p = 2
+    while p * p <= n:
+        if is_prime[p]:
+            is_prime[p*p::p] = [False] * ((n - p*p) // p + 1)
+        p += 1
+    return is_prime
+    
+def get_digit_count(v: int) -> int:
+    if v <= 0:
+        raise ValueError(f"Expected positive integer, got {v}")
+    return math.floor(math.log10(v)) + 1
+
+   
+
+def is_brilliant(n: int) -> bool:
+    """
+        A brilliant number is a semiprime where both prime factors
+        have the same number of digits.
+        https://www.geeksforgeeks.org/brilliant-numbers/
+    """
+    if n < 4:
+        return False
+    
+    is_prime = get_prime_sieve(n)
+    
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if is_prime[i] and n % i == 0:
+            x = n // i
+            if is_prime[x]:
+                if get_digit_count(i) == get_digit_count(x):
+                    return True
+    return False
+
+
+def is_emirpimes(v: int) -> bool:
+    """
+    A number is called emirpimes if it is a semiprime and if its reverse
+    is a different semiprime, thus excluding palindromic semiprimes.
+    """
+    if v <= 0:
+        raise ValueError(f"Expected positive integer, got {v}")
+    reverse_number = NumberTheory.get_reverse_number(v)
+
+    if v == reverse_number:
+        return False
+
+    return is_semi_prime(v) and is_semi_prime(reverse_number)
+
+
+
+def is_chen_prime(v: int) -> bool:        
+    if is_prime(v):
+        if v <= 0:
+            raise ValueError(f"Expected positive integer, got {v}")
+        return is_prime(v + 2) or is_semi_prime(v + 2)
+    return False
+
+   
+
+def is_emirp(v: int) -> bool:
+    """An emirp (prime spelled backwards) is a prime number that results
+    in a different prime when its decimal digits are reversed. This definition
+    excludes this related palindrome 
+    """
+    if v <= 0:
+        raise ValueError(f"Expected positive integer, got {v}")
+    return is_prime(v) and is_prime(NumberTheory.get_reverse_number(v))
+    
+
+def is_good_prime(v: int) -> bool:
+    """
+    A good prime is a prime number whose square is greater than the product of
+    any two primes at the same number of positions before and after it in the
+    sequence of  To solve this, create a list of primes from zero to 3x the
+    number. Iterate pointers forwards and backwards in matching jumps through list.
+    """
+    if not is_prime(v):
+        return False
+    
+    is_prime_sieve = get_prime_sieve(v * 3)
+    the_prime_list = [i for i in range(2, v * 3 + 1) if is_prime_sieve[i]]
+    
+    if v not in the_prime_list:
+        return False
+    
+    ndx = the_prime_list.index(v)
+    
+    for ndx_counter in range(1, ndx + 1):
+        if ndx + ndx_counter >= len(the_prime_list):
+            break
+        small = the_prime_list[ndx - ndx_counter]
+        large = the_prime_list[ndx + ndx_counter]
+        if v * v < small * large:
+            return False    
+    return True
+
+   
+
+def get_next_prime(v: int) -> int:
+    """
+    Returns the first prime number greater than v.
+
+    Example:
+        get_next_prime(10) returns 11.
+    """
+    candidate = v + 1
+
+    while not is_prime(candidate):
+        candidate += 1
+
+    return candidate
+
+
+def get_previous_prime(v: int) -> int:
+    """
+    Returns the first prime number less than v.
+
+    Example:
+        get_next_prime(10) returns 7.
+    """
+    candidate = v - 1
+
+    while candidate > 1:
+        if is_prime(candidate):
+            return candidate
+
+        candidate -= 1
+
+    return 0
+
+
+def get_next_prime_inclusive(v: int) -> int:
+    """
+    Returns v if v is prime; otherwise returns the first
+    prime number greater than v.
+
+    Example:
+        get_next_prime_inclusive(11) returns 11.
+        get_next_prime_inclusive(12) returns 13.
+    """
+    if is_prime(v):
+        return v
+
+    return get_next_prime(v)
+
+
+def get_previous_prime_inclusive(v: int) -> int:
+    """
+    Returns v if v is prime; otherwise returns the first
+    prime number less than v.
+
+    Example:
+        get_previous_prime_inclusive(11) returns 11.
+        get_previous_prime_inclusive(14) returns 13.
+    """
+    if is_prime(v):
+        return v
+
+    return get_previous_prime(v)
+
+def is_a_pointer_prime(v: int) -> bool:
+    """
+    A prime number p is called a-pointer if the next prime number can be obtained
+    by adding p to its sum of digits (a stands for additive).
+    Example: 293 is an a-pointer prime since the next prime equals 293 + 2 + 9 + 3 = 307.
+    """
+    if v < 0:
+        return False
+    
+    if not is_prime(v):
+        return False
+
+    next_number = v + NumberTheory.get_sum_of_digits(v)
+    return get_next_prime(v) == next_number
+
+def is_m_pointer_prime(v: int) -> bool:
+    """
+    A prime number p is called m-pointer if the next prime number can be
+    obtained by adding p to its product of digits (m stands for multiplicative).
+    Example: 1231 is an m-pointer prime since the next prime equals
+    1231 + 1 * 2 * 3 * 1 = 1237.
+    """
+    if v < 0:
+        return False
+    if not is_prime(v):
+        return False
+ 
+    next_number = v + NumberTheory.get_product_of_digits(v)
+    return get_next_prime(v) == next_number
+ 
+
+
+
+def is_inter_prime(v: int) -> bool:
+    """
+    An interprime is a composite number that is the average
+    of two consecutive primes.
+    Example: 9 is interprime since it is the average of 7 and 11.
+    """
+    if is_prime(v):
+        return False
+
+    prev_prime = get_previous_prime(v)
+    next_prime = get_next_prime(v)
+
+    return prev_prime + next_prime == 2 * v
+
+
+def get_distinct_prime_factors(v: int) -> list[int]:
+    """Returns a sorted set of distinct prime factors of v."""
+    return sorted(set(get_prime_factors(v)))
+  
+
+def is_droll(v: int) -> bool:
+    """
+    A droll number is one where the sum of even prime factors
+    equals the sum of odd prime factors.
+
+    Example:
+        72 = 2 * 2 * 2 * 3 * 3
+        even sum = 6
+        odd sum = 6
+    """
+    prime_factors = get_prime_factors(v)
+
+    even_total = sum(p for p in prime_factors if p == 2)
+    odd_total = sum(p for p in prime_factors if p != 2)
+
+    return even_total > 0 and even_total == odd_total
+
+
+def get_prime_lucky_numbers(v: int) -> list[int]:
+    """Returns a list of lucky numbers up to v that are also prime."""
+    return [n for n in NumberTheory.get_lucky_number_list(v) if is_prime(n)]
+
+def is_co_prime(a: int, b: int) -> bool:
+    """
+    Two integers are called co-prime (or relatively prime) if their 
+    greatest common divisor is 1.
+    
+    Co-primality is foundational for:
+        modular arithmetic
+        Euler’s totient function
+        RSA cryptography
+        reduced fractions
+        Diophantine equations
+    """
+    return math.gcd(a,b) == 1
+
+
+def get_lonely_numbers(limit: int) -> list[int]:
+    """
+    Returns all lonely numbers from 0 up to the specified limit.
+
+    A number n is called lonely if its distance to the nearest
+    prime number sets a new record.
+
+    The distance for a number n is defined as the minimum distance
+    between n and the closest prime different from n itself.
+
+    Examples:
+        0 is lonely because its nearest prime is 2, giving distance 2.
+
+        23 is lonely because the surrounding primes are 19 and 29,
+        giving a minimum distance of 4.
+
+        120 is lonely because it lies between primes 113 and 127,
+        giving a minimum distance of 7.
+
+    Example:
+        >>> get_lonely_numbers(100)
+        [0, 23, 53]
+
+    Args:
+        limit (int):
+            The inclusive upper bound to search for lonely numbers.
+
+    Returns:
+        list[int]:
+            A list containing all lonely numbers less than or equal
+            to the specified limit.
+    
+    """
+    primes = get_primes_up_to(limit + 1000)
+
+    lonely_numbers = []
+    record_distance = -1
+
+    for n in range(0, limit + 1):
+        index = bisect_left(primes, n)
+
+        previous_prime = None
+        next_prime = None
+
+        # closest prime below n
+        if index > 0:
+            previous_prime = primes[index - 1]
+
+        # closest prime above n
+        if index < len(primes):
+            if primes[index] == n:
+                if index + 1 < len(primes):
+                    next_prime = primes[index + 1]
             else:
-                v -= 1
-                if v == 0:
-                    return 0
-                if Primes.is_prime(None, v):
-                    return v
-        return None
+                next_prime = primes[index]
 
-    @staticmethod
-    def get_previous_prime(self = None, v: int = None) -> int:
-        """
-            Finds the prime number <b><i>before</i> v</b>.
-            Will not return <b>v</b> whether it is prime or not.
-        """
-        if v is None:
-            v = self.get_the_number()
-        return Primes.get_neighbor_prime(v, False, False)
+        if previous_prime is None:
+            distance = next_prime - n
+        elif next_prime is None:
+            distance = n - previous_prime
+        else:
+            distance = min(n - previous_prime, next_prime - n)
 
-    @staticmethod
-    def get_next_prime(self=None, v=None) -> int:
-        """
-            Finds the prime number <b><i>after</i> v</b>.
-            Will not return <b>v</b> whether it is prime or not.
-        """
-        if v is None:
-            v = self.get_the_number()
-        return Primes.get_neighbor_prime(v, True, False)
+        if distance > record_distance:
+            lonely_numbers.append(n)
+            record_distance = distance
 
-    @staticmethod
-    def get_previous_prime_inclusive(self=None, v: int = None) -> int:
-        """
-            Find the prime number before <b>v</b>. Returns <b>v</b> if prime.
-        """
-        if v is None:
-            v = self.get_the_number()
-        return Primes.get_neighbor_prime(v, False, True)
+    return lonely_numbers
 
-    @staticmethod
-    def get_next_prime_inclusive(self=None, v: int = None) -> int:
-        """
-            Find the prime number after <b>v</b>. Returns <b>v</b> if prime.
-        """
-        if v is None:
-            v = self.get_the_number()
-        return Primes.get_neighbor_prime(v, True, True)
 
-    @staticmethod
-    def is_a_pointer_prime(self=None, v: int = None) -> bool:
-        """
-           A prime number  'p'  is called a-pointer if the next prime number can be obtained
-            adding  'p'  to its sum of digits
-            (here the 'a' stands for additive).
-            For example, 293 is an a-pointer prime since the next prime is equal to 293 + 2 + 9 + 3 = 307.}
-        """
-        if v is None:
-            v = self.get_the_number()
-        if not Primes.is_prime(None, v):
-            return False
-        the_stack = []
-        number = v
-        the_stack.append(number)
-        while number > 0:
-            the_stack.append(number % 10)
-            number /= 10
-        nextNumber = 0
-        while len(the_stack) > 0:
-            nextNumber += the_stack.pop()
-        if Primes.is_prime(None, nextNumber):
-            return True
+
+def get_distance_to_closest_prime(v: int) -> int:
+    left_prime = get_previous_prime(v)
+    right_prime = get_next_prime(v)
+    if left_prime == 0:
+        return right_prime - v
+    left_distance = v - left_prime
+    right_distance = right_prime - v
+    return min(left_distance, right_distance)
+    
+
+def get_fortunate_number(n: int) -> int:
+    """
+    Returns the Fortunate number for the primorial
+    generated from the first n primes.
+    """
+
+    primes = get_first_n_primes(n)
+
+    primorial = 1
+
+    for p in primes:
+        primorial *= p
+
+    m = 2
+
+    while True:
+        if is_prime(primorial + m):
+            return m
+
+        m += 1
+
+
+def is_n_smooth(value: int, n: int) -> bool:
+    """
+    In Number Theory  and n-smooth number is an integer whose prime factors are all less than 
+    or equal to n.
+
+    Basic Algorithm Idea
+
+    To determine if a number is n-smooth:
+        Factor the number.
+        Check whether every prime factor is ≤ n.
+    """
+    if value < 1:
         return False
+    
+    if value == 1:
+        return True   
+    
+    largest_prime = max(get_prime_factors(value))
+    return largest_prime <= n
+    
 
-    @staticmethod
-    def is_m_pointer_prime(self = None, v: int = None) -> bool:
-        """
-            A prime number  'p'  is called m-pointer if the next prime number can be
-            obtained adding  'p'  to its product of digits (here the 'm' stands for
-            multiplicative). For example, 1231 is a m-pointer prime since the next
-            prime is equal to 1231 + 1 ⋅ 2 ⋅ 3 ⋅ 1= 1237.
-        """
-        if v is None:
-            v = self.get_the_number()
-        if not Primes.is_prime(None,v):
-            return False
-        the_stack = []
-        number = v
-        the_stack.append(number)
-        while number > 0:
-            the_stack.append(number % 10)
-            number /= 10
-        nextNumber = 0
-        while len(the_stack) > 0:
-            nextNumber *= the_stack.pop()
-        return Primes.is_prime(None, nextNumber)
-
-    @staticmethod
-    def is_inter_prime(self = None, v: int = None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        if Primes.is_prime(None,v):
-            return False
-        the_array = [0, 0]
-        counter = v - 1
-        while counter > 0:
-            if Primes.is_prime(None,counter):
-                the_array[0] = counter
-                break
-            counter -= 1
-        counter = v
-        while counter < v * 2:
-            if Primes.is_prime(None,counter):
-                the_array[1] = counter
-                break
-            counter += 1
-        return (the_array[0] + the_array[1]) / 2 == v
-
-    @staticmethod
-    def get_distinct_prime_factors(self = None, v: int = None) -> list[int]:
-        if v is None:
-            v = self.get_the_number()
-        theList = theList2 = []
-        # theList = Primes.get_prime_factors(v)
-        theList = Primes.get_prime_factors(None, v)
-        myset = set(())
-        for ele in theList:
-            myset.add(ele)
-        return list(myset)
-
-    @staticmethod
-    def is_droll(self = None, v=None) -> bool:
-        if v is None:
-            v = self.get_the_number()
-        primeFactors = Primes.get_prime_factors(None, v)
-        evenTotal = 0
-        oddTotal = 0
-        for p in primeFactors:
-            if NumberTheory.is_even(None,p):
-                evenTotal += p
-            if NumberTheory.is_odd(None,p):
-                oddTotal += p
-        print("in droll: ", evenTotal, ' ', oddTotal, " ", primeFactors)
-        if evenTotal > 0 and evenTotal == oddTotal:
-            return True
+def is_pierpont_prime(v: int) -> bool:
+    if v == 1:
         return False
-
-    @staticmethod
-    def get_prime_lucky_numbers(self = None, v: int = None) -> list[int]:
-        if v is None:
-            v = self.get_the_number()
-        theList = NumberTheory.get_lucky_number_list(v)
-        outputList = []
-        for theNumber in theList:
-            if Primes.is_prime(theNumber):
-                outputList.append(theNumber)
-        return outputList
+    return is_prime(v) and is_n_smooth(v - 1, 3)
 
 
 
-    def is_co_prime(self) -> bool:
-        pass
+def is_sphenic(v: int) -> bool:
+    """
+    A sphenic number is a product of exactly three distinct prime factors.
+    Example: 30 = 2 * 3 * 5 is sphenic.
+    """
+    return len(get_prime_factors(v)) == 3 and \
+           len(get_distinct_prime_factors(v)) == 3
 
-    def get_prime_list(self) -> list[int]:
-        pass
 
-    def get_lonely_number(self) -> int:
-        pass
+def get_primes_up_to(limit: int) -> list[int]:
+    primes = []
 
-    def get_fortunate_numbers(self) -> int:
-        pass
+    for n in range(2, limit + 1):
+        if is_prime(n):
+            primes.append(n)
 
-    def is_n_smooth(self) -> bool:
-        pass
+    return primes
 
-    def is_pierpont_prime(self) -> bool:
-        pass
 
-    @staticmethod
-    def isSphenic(self=None, v=None) -> bool:
-        if v is None:
-            v = self.get_the_number()
+def get_first_n_primes(n: int) -> list[int]:
+    primes = []
+    candidate = 2
 
-        set1 = Primes.get_distinct_prime_factors(None, v)
-        if len(set1) == 3:
-                set2 = Primes.get_prime_factors(None, v)
-                return set1 == set2
-        return False
+    while len(primes) < n:
+        if is_prime(candidate):
+            primes.append(candidate)
+
+        candidate += 1
+
+    return primes
